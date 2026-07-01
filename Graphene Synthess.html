@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white font-mono selection:bg-red-violet selection:text-black">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID WEAVER // TRANSFORMATION ENGINE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-red': '#FF003C',
+                        'red-violet': '#E056FD',
+                        'obsidian': '#000000'
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-outline {
+            outline: 4px solid #FF003C !important;
+        }
+
+        /* Hide scrollbar for clean brutalist look but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden flex flex-col relative pb-16">
+
+    <!-- NEW CODE ADDITIONS START: DEVICE CONTROLS -->
+    <header class="border-b border-red-violet/30 p-4 bg-black sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-cyber-red rounded-full animate-ping"></span>
+                <h1 class="text-lg font-bold tracking-widest text-red-violet">FJH TRANSMUTATION // REACTOR</h1>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- Unit System Toggle -->
+                <div class="flex items-center gap-2 border border-cyber-red/40 p-1 rounded bg-black">
+                    <button onclick="setUnitSystem('metric')" id="btn-metric"
+                        class="px-3 py-1 text-xs rounded border border-transparent transition-all bg-cyber-red text-white">METRIC</button>
+                    <button onclick="setUnitSystem('imperial')" id="btn-imperial"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all text-white/60">IMPERIAL</button>
+                </div>
+
+                <!-- Device Mode Controls -->
+                <div class="flex items-center gap-2 border border-red-violet/40 p-1 rounded bg-black">
+                    <span class="text-xs px-2 text-white/60">DEVICE:</span>
+                    <button onclick="setDeviceMode('mobile')" id="btn-mobile"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">MOBILE</button>
+                    <button onclick="setDeviceMode('pc')" id="btn-pc"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all bg-cyber-red text-white">PC</button>
+                    <button onclick="setDeviceMode('console')" id="btn-console"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">CONSOLE</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- NEW CODE ADDITIONS END: DEVICE CONTROLS -->
+
+    <main id="app-container"
+        class="max-w-7xl mx-auto w-full flex-grow grid grid-cols-1 md:grid-cols-12 gap-6 p-6 transition-all duration-300">
+
+        <!-- Left Column: Input Form (Spans 4 columns) -->
+        <section class="md:col-span-4 border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col gap-4">
+            <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2">REACTOR INPUT
+            </h2>
+
+            <div class="flex flex-col gap-4 text-xs">
+                <div class="flex flex-col gap-1">
+                    <label class="text-white/50 uppercase">Select Carbon Feedstock:</label>
+                    <select id="feedstock-type"
+                        class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+                        <option value="agriculturalWaste">Agricultural Crop Waste (High C / Low Metal)</option>
+                        <option value="wood">Wood Pyrolysis Biochar (Medium C)</option>
+                        <option value="circuitBoards">E-Waste / Circuit Boards (High Metal / Low C)</option>
+                        <option value="mixedPlastics">Mixed Plastic Waste (High C / High H)</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-white/50 uppercase">Input Mass Tier:</label>
+                    <select id="mass-tier"
+                        class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded"
+                        onchange="updateMassLabel()">
+                        <!-- Metric Options (Default) -->
+                        <option value="g" class="opt-metric">Grams (g) - Lab Scale</option>
+                        <option value="kg" class="opt-metric">Kilograms (kg) - Pilot Scale</option>
+                        <option value="t" class="opt-metric">Metric Tons (t) - Industrial Scale</option>
+                        <!-- Imperial Options -->
+                        <option value="oz" class="opt-imperial hidden">Ounces (oz) - Lab Scale</option>
+                        <option value="lb" class="opt-imperial hidden">Pounds (lb) - Pilot Scale</option>
+                        <option value="ton" class="opt-imperial hidden">US Tons (ton) - Industrial Scale</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-white/50 uppercase" id="label-mass">Input Mass Quantity:</label>
+                    <input type="number" id="input-mass" value="1000" min="1"
+                        class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+                </div>
+
+                <button onclick="runTransmutation()"
+                    class="cli-button w-full bg-cyber-red text-white py-3 mt-2 font-bold hover:bg-red-violet transition-all uppercase tracking-wider rounded">Initialize
+                    Flash Pulse</button>
+            </div>
+        </section>
+
+        <!-- Center Column: Transmutation Chamber Animation (Spans 4 columns) -->
+        <section class="md:col-span-4 border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col gap-4">
+            <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2">CHAMBER STATE
+            </h2>
+            <div class="flex items-center justify-center bg-black/50 border border-red-violet/20 rounded p-2 h-[280px]">
+                <canvas id="reaction-canvas" width="280" height="280" class="bg-black rounded"></canvas>
+            </div>
+            <div class="text-center bg-black border border-red-violet/20 p-2 rounded">
+                <span class="text-xs text-white/50 block mb-1">CHAMBER TEMPERATURE:</span>
+                <span class="text-sm text-cyber-red font-bold block" id="temperature-display">293 K // STANDBY</span>
+            </div>
+        </section>
+
+        <!-- Right Column: Outputs (Spans 4 columns) -->
+        <section class="md:col-span-4 border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col h-[400px]">
+            <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2 mb-4">RECOVERED
+                OUTFLOW</h2>
+
+            <div class="flex flex-col gap-3 overflow-y-auto no-scrollbar pr-2">
+
+                <!-- Carbon/Gas Outputs -->
+                <div class="border border-red-violet/40 p-3 bg-red-violet/5 rounded">
+                    <span class="text-xs text-white/50 block">TURBOSTRATIC GRAPHENE:</span>
+                    <span class="text-lg font-bold text-red-violet" id="yield-graphene">0.00</span>
+                </div>
+
+                <div class="border border-red-violet/20 p-3 bg-black rounded">
+                    <span class="text-xs text-white/50 block">HYDROGEN GAS (H2):</span>
+                    <span class="text-lg font-bold text-white" id="yield-hydrogen">0.00</span>
+                </div>
+
+                <!-- E-Waste Metals Breakdown (Hidden by default unless E-Waste is selected) -->
+                <div id="metal-breakdown" class="hidden flex flex-col gap-2 mt-2 border-t border-red-violet/20 pt-3">
+                    <span class="text-xs text-cyber-red font-bold mb-1">// E-WASTE METAL RECOVERY</span>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="border border-white/10 p-2 rounded bg-black">
+                            <span class="text-[10px] text-white/50 block">COPPER (Cu)</span>
+                            <span class="text-sm font-mono text-white" id="yield-cu">0.00</span>
+                        </div>
+                        <div class="border border-yellow-500/30 p-2 rounded bg-yellow-500/5">
+                            <span class="text-[10px] text-yellow-500/70 block">GOLD (Au)</span>
+                            <span class="text-sm font-mono text-yellow-500" id="yield-au">0.00</span>
+                        </div>
+                        <div class="border border-gray-400/30 p-2 rounded bg-gray-400/5">
+                            <span class="text-[10px] text-gray-400/70 block">SILVER (Ag)</span>
+                            <span class="text-sm font-mono text-gray-300" id="yield-ag">0.00</span>
+                        </div>
+                        <div class="border border-white/10 p-2 rounded bg-black">
+                            <span class="text-[10px] text-white/50 block">PALLADIUM (Pd)</span>
+                            <span class="text-sm font-mono text-white" id="yield-pd">0.00</span>
+                        </div>
+                        <div class="border border-white/10 p-2 rounded bg-black">
+                            <span class="text-[10px] text-white/50 block">PLATINUM (Pt)</span>
+                            <span class="text-sm font-mono text-white" id="yield-pt">0.00</span>
+                        </div>
+                        <div class="border border-white/10 p-2 rounded bg-black">
+                            <span class="text-[10px] text-white/50 block">TIN (Sn)</span>
+                            <span class="text-sm font-mono text-white" id="yield-sn">0.00</span>
+                        </div>
+                        <div class="border border-white/10 p-2 rounded bg-black">
+                            <span class="text-[10px] text-white/50 block">LEAD (Pb)</span>
+                            <span class="text-sm font-mono text-white" id="yield-pb">0.00</span>
+                        </div>
+                        <div class="border border-white/10 p-2 rounded bg-black">
+                            <span class="text-[10px] text-white/50 block">NICKEL (Ni)</span>
+                            <span class="text-sm font-mono text-white" id="yield-ni">0.00</span>
+                        </div>
+                        <div class="border border-white/10 p-2 rounded bg-black">
+                            <span class="text-[10px] text-white/50 block">ALUMINUM (Al)</span>
+                            <span class="text-sm font-mono text-white" id="yield-al">0.00</span>
+                        </div>
+                        <div class="border border-white/10 p-2 rounded bg-black">
+                            <span class="text-[10px] text-white/50 block">ZINC (Zn)</span>
+                            <span class="text-sm font-mono text-white" id="yield-zn">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="absolute bottom-4 right-4 text-xs font-bold tracking-widest text-red-violet/50">
+        ARCHITECT // VOID WEAVER
+    </footer>
+
+    <!-- NEW CODE ADDITIONS START: CONSOLE JAVASCRIPT -->
+    <script>
+        // UI State Variables
+        let currentMode = 'pc';
+        let currentSystem = 'metric';
+        let focusableElements = [];
+        let consoleFocusIndex = 0;
+
+        // Reactor State Variables
+        let isReacting = false;
+        let reactionTime = 0;
+        let targetSpeed = 0.01;
+        let currentSpeed = 0.01;
+
+        // Material Composition Profiles (Percentages)
+        const feedstockSpecs = {
+            agriculturalWaste: { carbon: 0.70, hydrogen: 0.06, isEwaste: false },
+            wood: { carbon: 0.50, hydrogen: 0.06, isEwaste: false },
+            mixedPlastics: { carbon: 0.85, hydrogen: 0.14, isEwaste: false },
+            circuitBoards: {
+                carbon: 0.15,
+                hydrogen: 0.02,
+                isEwaste: true,
+                metals: {
+                    cu: 0.20,    // Copper 20%
+                    sn: 0.04,    // Tin 4%
+                    pb: 0.02,    // Lead 2%
+                    al: 0.02,    // Aluminum 2%
+                    zn: 0.01,    // Zinc 1%
+                    ni: 0.01,    // Nickel 1%
+                    ag: 0.002,   // Silver 0.2%
+                    au: 0.0005,  // Gold 0.05%
+                    pd: 0.0001,  // Palladium 0.01%
+                    pt: 0.00005  // Platinum 0.005%
+                }
+            }
+        };
+
+        const fjhCarbonEfficiency = 0.85;
+        const hydrogenRecoveryEfficiency = 0.90;
+
+        // UI Controls
+        function setUnitSystem(system) {
+            currentSystem = system;
+
+            // Update Buttons
+            document.getElementById('btn-metric').className = `px-3 py-1 text-xs rounded border border-transparent transition-all ${system === 'metric' ? 'bg-cyber-red text-white' : 'text-white/60 hover:border-cyber-red'}`;
+            document.getElementById('btn-imperial').className = `px-3 py-1 text-xs rounded border border-transparent transition-all ${system === 'imperial' ? 'bg-cyber-red text-white' : 'text-white/60 hover:border-cyber-red'}`;
+
+            // Update Dropdown Options
+            const select = document.getElementById('mass-tier');
+            const metricOpts = document.querySelectorAll('.opt-metric');
+            const imperialOpts = document.querySelectorAll('.opt-imperial');
+
+            if (system === 'metric') {
+                metricOpts.forEach(opt => opt.classList.remove('hidden'));
+                imperialOpts.forEach(opt => opt.classList.add('hidden'));
+                select.value = 'g';
+            } else {
+                metricOpts.forEach(opt => opt.classList.add('hidden'));
+                imperialOpts.forEach(opt => opt.classList.remove('hidden'));
+                select.value = 'oz';
+            }
+
+            updateMassLabel();
+            resetOutputs();
+        }
+
+        function updateMassLabel() {
+            const tier = document.getElementById('mass-tier').value;
+            document.getElementById('label-mass').textContent = `Input Mass Quantity (${tier}):`;
+        }
+
+        function setDeviceMode(mode) {
+            currentMode = mode;
+            const container = document.getElementById('app-container');
+            const btns = ['btn-mobile', 'btn-pc', 'btn-console'];
+
+            btns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                btn.classList.remove('bg-cyber-red', 'text-white');
+            });
+            document.getElementById(`btn-${mode}`).classList.add('bg-cyber-red', 'text-white');
+
+            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
+
+            if (mode === 'mobile') {
+                container.classList.remove('grid-cols-12', 'max-w-7xl');
+                container.classList.add('grid-cols-1', 'max-w-md');
+            } else if (mode === 'pc') {
+                container.classList.remove('grid-cols-1', 'max-w-md');
+                container.classList.add('grid-cols-12', 'max-w-7xl');
+            } else if (mode === 'console') {
+                container.classList.remove('grid-cols-1', 'max-w-md');
+                container.classList.add('grid-cols-12', 'max-w-7xl');
+                initializeConsoleNavigation();
+            }
+        }
+
+        function initializeConsoleNavigation() {
+            focusableElements = Array.from(document.querySelectorAll('.cli-button, input, select'));
+            consoleFocusIndex = 0;
+            updateConsoleFocus();
+        }
+
+        function updateConsoleFocus() {
+            if (currentMode !== 'console') return;
+            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
+            if (focusableElements[consoleFocusIndex]) {
+                focusableElements[consoleFocusIndex].classList.add('custom-outline');
+                focusableElements[consoleFocusIndex].focus();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (currentMode !== 'console') return;
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                e.preventDefault();
+                consoleFocusIndex = (consoleFocusIndex + 1) % focusableElements.length;
+                updateConsoleFocus();
+            } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                e.preventDefault();
+                consoleFocusIndex = (consoleFocusIndex - 1 + focusableElements.length) % focusableElements.length;
+                updateConsoleFocus();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (focusableElements[consoleFocusIndex]) {
+                    focusableElements[consoleFocusIndex].click();
+                }
+            }
+        });
+
+        // HTML5 Canvas Reactor Rendering
+        const canvas = document.getElementById('reaction-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawReactor() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = 'rgba(224, 86, 253, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(140, 140, 100, 0, Math.PI * 2);
+            ctx.stroke();
+
+            if (isReacting) {
+                currentSpeed = currentSpeed * 0.95 + targetSpeed * 0.05;
+                reactionTime += currentSpeed;
+            } else {
+                currentSpeed = currentSpeed * 0.95 + 0.01 * 0.05;
+                reactionTime += currentSpeed;
+            }
+
+            ctx.strokeStyle = isReacting ? '#FF003C' : '#E056FD';
+            ctx.lineWidth = isReacting ? 2.5 : 1;
+
+            const points = 8;
+            ctx.beginPath();
+            for (let i = 0; i < points; i++) {
+                const angle = (i * Math.PI * 2 / points) + reactionTime;
+                const radius = 80 + (isReacting ? Math.sin(Date.now() / 50) * 15 : 0);
+                const x = 140 + Math.cos(angle) * radius;
+                const y = 140 + Math.sin(angle) * radius;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.stroke();
+
+            if (isReacting) {
+                ctx.fillStyle = '#FF003C';
+                ctx.beginPath();
+                ctx.arc(140, 140, 15 + Math.random() * 10, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            requestAnimationFrame(drawReactor);
+        }
+
+        // Reaction Logic
+        function resetOutputs() {
+            const unit = document.getElementById('mass-tier').value;
+            document.getElementById('yield-graphene').textContent = `0.00 ${unit}`;
+            document.getElementById('yield-hydrogen').textContent = `0.00 ${unit}`;
+
+            const metals = ['cu', 'au', 'ag', 'pd', 'pt', 'sn', 'pb', 'ni', 'al', 'zn'];
+            metals.forEach(m => {
+                document.getElementById(`yield-${m}`).textContent = `0.00 ${unit}`;
+            });
+        }
+
+        document.getElementById('feedstock-type').addEventListener('change', function () {
+            const specs = feedstockSpecs[this.value];
+            const metalDiv = document.getElementById('metal-breakdown');
+            if (specs.isEwaste) {
+                metalDiv.classList.remove('hidden');
+            } else {
+                metalDiv.classList.add('hidden');
+            }
+            resetOutputs();
+        });
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(num);
+        }
+
+        function runTransmutation() {
+            if (isReacting) return;
+
+            const massInput = parseFloat(document.getElementById('input-mass').value);
+            const feedstock = document.getElementById('feedstock-type').value;
+            const unit = document.getElementById('mass-tier').value;
+            const specs = feedstockSpecs[feedstock];
+
+            if (isNaN(massInput) || massInput <= 0) {
+                alert("INPUT MASS MUST BE A POSITIVE VALUE");
+                return;
+            }
+
+            isReacting = true;
+            targetSpeed = 0.4;
+
+            let temp = 293;
+            const interval = setInterval(() => {
+                if (temp < 3000) {
+                    temp += Math.floor(Math.random() * 400) + 200;
+                    document.getElementById('temperature-display').textContent = `${temp} K // FLASH ACTIVE`;
+                } else {
+                    clearInterval(interval);
+                    completeTransmutation(massInput, specs, unit);
+                }
+            }, 50);
+        }
+
+        function completeTransmutation(mass, specs, unit) {
+            targetSpeed = 0.01;
+            isReacting = false;
+            document.getElementById('temperature-display').textContent = `3000 K // EXTRACTION COMPLETE`;
+
+            // Base yields
+            const finalGraphene = (mass * specs.carbon) * fjhCarbonEfficiency;
+            const finalHydrogen = (mass * specs.hydrogen) * hydrogenRecoveryEfficiency;
+
+            document.getElementById('yield-graphene').textContent = `${formatNumber(finalGraphene)} ${unit}`;
+            document.getElementById('yield-hydrogen').textContent = `${formatNumber(finalHydrogen)} ${unit}`;
+
+            // Metal yields (if E-waste)
+            if (specs.isEwaste) {
+                for (const [metal, percentage] of Object.entries(specs.metals)) {
+                    const yieldMass = mass * percentage;
+                    document.getElementById(`yield-${metal}`).textContent = `${formatNumber(yieldMass)} ${unit}`;
+                }
+            }
+        }
+
+        // Initialize
+        drawReactor();
+    </script>
+    <!-- NEW CODE ADDITIONS END: CONSOLE JAVASCRIPT -->
+</body>
+
+</html>

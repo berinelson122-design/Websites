@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white font-mono selection:bg-red-violet selection:text-black">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID_WEAVER // UNIVERSAL_TRIGONOMETRY_CALCULATOR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-red': '#FF003C',
+                        'red-violet': '#E056FD',
+                        'obsidian': '#000000'
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-outline {
+            outline: 4px solid #FF003C !important;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden flex flex-col relative pb-16">
+
+    <!-- NEW_CODE_ADDITIONS_START: DEVICE_CONTROLS -->
+    <header class="border-b border-red-violet/30 p-4 bg-black sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-cyber-red rounded-full animate-ping"></span>
+                <h1 class="text-lg font-bold tracking-widest text-red-violet">TRIGONOMETRY // MASTER_SOLVER</h1>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- Angle Mode Toggle -->
+                <div class="flex items-center gap-2 border border-cyber-red/40 p-1 rounded bg-black">
+                    <button onclick="setAngleMode('deg')" id="btn-deg"
+                        class="px-3 py-1 text-xs rounded border border-transparent transition-all bg-cyber-red text-white">DEGREES</button>
+                    <button onclick="setAngleMode('rad')" id="btn-rad"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all text-white/60">RADIANS</button>
+                </div>
+
+                <!-- Device Mode Controls -->
+                <div class="flex items-center gap-2 border border-red-violet/40 p-1 rounded bg-black">
+                    <span class="text-xs px-2 text-white/60">DEVICE:</span>
+                    <button onclick="setDeviceMode('mobile')" id="btn-mobile"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">MOBILE</button>
+                    <button onclick="setDeviceMode('pc')" id="btn-pc"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all bg-cyber-red text-white">PC</button>
+                    <button onclick="setDeviceMode('console')" id="btn-console"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">CONSOLE</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- NEW_CODE_ADDITIONS_END: DEVICE_CONTROLS -->
+
+    <main id="app-container"
+        class="max-w-7xl mx-auto w-full flex-grow grid grid-cols-1 md:grid-cols-12 gap-6 p-6 transition-all duration-300">
+
+        <!-- COLUMN 1: Inputs & Core Evaluator (Spans 4 columns) -->
+        <section class="md:col-span-4 border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col gap-4">
+            <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2">PARAMETER
+                INPUTS</h2>
+
+            <!-- Tab Selection: Single Angle vs. Triangle Solver -->
+            <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+                <button onclick="setSolverTab('angle')" id="tab-angle"
+                    class="py-2 border border-cyber-red bg-cyber-red/20 text-white uppercase rounded">Angle
+                    Mode</button>
+                <button onclick="setSolverTab('triangle')" id="tab-triangle"
+                    class="py-2 border border-red-violet/20 hover:border-cyber-red text-white/60 uppercase rounded">Triangle
+                    Mode</button>
+            </div>
+
+            <!-- UI Group: Single Angle Evaluator -->
+            <div id="group-angle" class="flex flex-col gap-3 text-xs">
+                <div class="flex flex-col gap-1">
+                    <label class="text-white/50 uppercase" id="label-angle-input">Primary Angle (θ):</label>
+                    <input type="number" id="input-theta" value="45" oninput="calculateAll()"
+                        class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-white/50 uppercase">Secondary Angle (φ) - For Sum/Diff:</label>
+                    <input type="number" id="input-phi" value="30" oninput="calculateAll()"
+                        class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+                </div>
+
+                <div class="border border-red-violet/20 p-3 rounded bg-black flex flex-col gap-2 mt-2">
+                    <span class="text-cyber-red font-bold block">// PRIMARY RATIOS</span>
+                    <div class="grid grid-cols-2 gap-2 text-[10px]">
+                        <div>SINE: <span id="val-sin" class="text-white font-bold">0.00</span></div>
+                        <div>COSECANT: <span id="val-csc" class="text-white font-bold">0.00</span></div>
+                        <div>COSINE: <span id="val-cos" class="text-white font-bold">0.00</span></div>
+                        <div>SECANT: <span id="val-sec" class="text-white font-bold">0.00</span></div>
+                        <div>TANGENT: <span id="val-tan" class="text-white font-bold">0.00</span></div>
+                        <div>COTANGENT: <span id="val-cot" class="text-white font-bold">0.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UI Group: Triangle Solver -->
+            <div id="group-triangle" class="hidden flex flex-col gap-3 text-xs">
+                <p class="text-[10px] text-white/50 leading-relaxed border-l border-cyber-red pl-2 mb-2">// ENTER THREE
+                    SIDES (SSS) OR TWO SIDES & INCLUDED ANGLE (SAS) TO SOLVE</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50">SIDE a:</label>
+                        <input type="number" id="tri-a" value="5" oninput="solveTriangle()"
+                            class="bg-black border border-red-violet/40 p-2 text-white rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50">SIDE b:</label>
+                        <input type="number" id="tri-b" value="6" oninput="solveTriangle()"
+                            class="bg-black border border-red-violet/40 p-2 text-white rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50">SIDE c (For SSS):</label>
+                        <input type="number" id="tri-c" value="7" oninput="solveTriangle()"
+                            class="bg-black border border-red-violet/40 p-2 text-white rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50" id="label-tri-angle">ANGLE C (For SAS):</label>
+                        <input type="number" id="tri-C-angle" value="" placeholder="Disabled" oninput="solveTriangle()"
+                            class="bg-black border border-red-violet/40 p-2 text-white rounded">
+                    </div>
+                </div>
+                <div class="border border-red-violet/20 p-3 rounded bg-black flex flex-col gap-2 mt-2">
+                    <span class="text-cyber-red font-bold block">// SOLVED PARAMETERS</span>
+                    <div class="grid grid-cols-2 gap-2 text-[10px]" id="tri-results">
+                        <div>ANGLE A: <span id="res-A" class="text-white font-bold">0.00</span></div>
+                        <div>ANGLE B: <span id="res-B" class="text-white font-bold">0.00</span></div>
+                        <div>ANGLE C: <span id="res-C" class="text-white font-bold">0.00</span></div>
+                        <div>AREA: <span id="res-area" class="text-white font-bold">0.00</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLUMN 2: Procedural Vector Canvas (Spans 4 columns) -->
+        <section class="md:col-span-4 border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col gap-4">
+            <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2"
+                id="canvas-header">UNIT_CIRCLE_VISUALIZER</h2>
+            <div class="flex items-center justify-center bg-black/50 border border-red-violet/20 rounded p-2 h-[280px]">
+                <canvas id="vector-canvas" width="280" height="280" class="bg-black rounded"></canvas>
+            </div>
+            <div class="text-center bg-black border border-red-violet/20 p-2 rounded text-xs">
+                <span class="text-white/50 block mb-1">SYSTEM CLOCK SIGNAL:</span>
+                <span class="text-cyber-red font-bold block" id="system-clock">0.00 ms // ACQUIRING</span>
+            </div>
+        </section>
+
+        <!-- COLUMN 3: Advanced Identity Solver (Spans 4 columns) -->
+        <section
+            class="md:col-span-4 border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col h-[400px] md:h-auto">
+            <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2 mb-4">ADVANCED
+                IDENTITY RESOLUTION</h2>
+            <div class="flex flex-col gap-3 overflow-y-auto no-scrollbar pr-2 text-xs flex-grow">
+
+                <!-- Double-Angle Output -->
+                <div class="border border-red-violet/40 p-3 bg-red-violet/5 rounded flex flex-col gap-1">
+                    <span class="text-[10px] text-red-violet font-bold block">// DOUBLE-ANGLE (2θ)</span>
+                    <div class="grid grid-cols-1 gap-1 text-[10px]">
+                        <div>SIN(2θ): <span id="val-double-sin" class="text-white font-bold">0.00</span></div>
+                        <div>COS(2θ): <span id="val-double-cos" class="text-white font-bold">0.00</span></div>
+                    </div>
+                </div>
+
+                <!-- Half-Angle Output -->
+                <div class="border border-red-violet/20 p-3 bg-black rounded flex flex-col gap-1">
+                    <span class="text-[10px] text-white/50 font-bold block">// HALF-ANGLE (θ/2)</span>
+                    <div class="grid grid-cols-1 gap-1 text-[10px]">
+                        <div>SIN(θ/2): <span id="val-half-sin" class="text-white font-bold">0.00</span></div>
+                        <div>COS(θ/2): <span id="val-half-cos" class="text-white font-bold">0.00</span></div>
+                    </div>
+                </div>
+
+                <!-- Sum & Difference Output -->
+                <div class="border border-red-violet/20 p-3 bg-black rounded flex flex-col gap-1">
+                    <span class="text-[10px] text-white/50 font-bold block">// SUM & DIFFERENCE (θ ± φ)</span>
+                    <div class="grid grid-cols-1 gap-1 text-[10px]">
+                        <div>SIN(θ + φ): <span id="val-sum-sin" class="text-white font-bold">0.00</span></div>
+                        <div>COS(θ - φ): <span id="val-diff-cos" class="text-white font-bold">0.00</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="absolute bottom-4 right-4 text-xs font-bold tracking-widest text-red-violet/50">
+        ARCHITECT // VOID_WEAVER
+    </footer>
+
+    <!-- NEW_CODE_ADDITIONS_START: CONSOLE_JAVASCRIPT -->
+    <script>
+        let currentMode = 'pc';
+        let angleMode = 'deg';
+        let solverTab = 'angle';
+        let focusableElements = [];
+        let consoleFocusIndex = 0;
+
+        // Triangle vertices coordinates for drawing
+        let triVerts = { x1: 0, y1: 0, x2: 0, y2: 0, x3: 0, y3: 0 };
+
+        function setDeviceMode(mode) {
+            currentMode = mode;
+            const container = document.getElementById('app-container');
+            const btns = ['btn-mobile', 'btn-pc', 'btn-console'];
+
+            btns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                btn.classList.remove('bg-cyber-red', 'text-white');
+            });
+            document.getElementById(`btn-${mode}`).classList.add('bg-cyber-red', 'text-white');
+
+            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
+
+            if (mode === 'mobile') {
+                container.classList.remove('grid-cols-12', 'max-w-7xl');
+                container.classList.add('grid-cols-1', 'max-w-md');
+            } else if (mode === 'pc') {
+                container.classList.remove('grid-cols-1', 'max-w-md');
+                container.classList.add('grid-cols-12', 'max-w-7xl');
+            } else if (mode === 'console') {
+                container.classList.remove('grid-cols-1', 'max-w-md');
+                container.classList.add('grid-cols-12', 'max-w-7xl');
+                initializeConsoleNavigation();
+            }
+        }
+
+        function setAngleMode(mode) {
+            angleMode = mode;
+            document.getElementById('btn-deg').className = `px-3 py-1 text-xs rounded border border-transparent transition-all ${mode === 'deg' ? 'bg-cyber-red text-white' : 'text-white/60 hover:border-cyber-red'}`;
+            document.getElementById('btn-rad').className = `px-3 py-1 text-xs rounded border border-transparent transition-all ${mode === 'rad' ? 'bg-cyber-red text-white' : 'text-white/60 hover:border-cyber-red'}`;
+
+            document.getElementById('label-angle-input').textContent = mode === 'deg' ? 'Primary Angle (θ) Degrees:' : 'Primary Angle (θ) Radians:';
+            document.getElementById('label-tri-angle').textContent = mode === 'deg' ? 'ANGLE C (SAS) Degrees:' : 'ANGLE C (SAS) Radians:';
+
+            calculateAll();
+            solveTriangle();
+        }
+
+        function setSolverTab(tab) {
+            solverTab = tab;
+            document.getElementById('tab-angle').className = `py-2 border uppercase rounded ${tab === 'angle' ? 'border-cyber-red bg-cyber-red/20 text-white' : 'border-red-violet/20 hover:border-cyber-red text-white/60'}`;
+            document.getElementById('tab-triangle').className = `py-2 border uppercase rounded ${tab === 'triangle' ? 'border-cyber-red bg-cyber-red/20 text-white' : 'border-red-violet/20 hover:border-cyber-red text-white/60'}`;
+
+            if (tab === 'angle') {
+                document.getElementById('group-angle').classList.remove('hidden');
+                document.getElementById('group-triangle').classList.add('hidden');
+                document.getElementById('canvas-header').textContent = 'UNIT_CIRCLE_VISUALIZER';
+            } else {
+                document.getElementById('group-angle').classList.add('hidden');
+                document.getElementById('group-triangle').classList.remove('hidden');
+                document.getElementById('canvas-header').textContent = 'TRIANGLE_GEOMETRY_SOLVER';
+                solveTriangle();
+            }
+        }
+
+        function initializeConsoleNavigation() {
+            focusableElements = Array.from(document.querySelectorAll('.cli-button, input, select, button[id^="tab-"]'));
+            consoleFocusIndex = 0;
+            updateConsoleFocus();
+        }
+
+        function updateConsoleFocus() {
+            if (currentMode !== 'console') return;
+            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
+            if (focusableElements[consoleFocusIndex]) {
+                focusableElements[consoleFocusIndex].classList.add('custom-outline');
+                focusableElements[consoleFocusIndex].focus();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (currentMode !== 'console') return;
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                e.preventDefault();
+                consoleFocusIndex = (consoleFocusIndex + 1) % focusableElements.length;
+                updateConsoleFocus();
+            } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                e.preventDefault();
+                consoleFocusIndex = (consoleFocusIndex - 1 + focusableElements.length) % focusableElements.length;
+                updateConsoleFocus();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (focusableElements[consoleFocusIndex]) {
+                    focusableElements[consoleFocusIndex].click();
+                }
+            }
+        });
+
+        // Numerical Formatting
+        function formatVal(val) {
+            if (isNaN(val) || !isFinite(val)) return "UNDEFINED";
+            return new Intl.NumberFormat('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(val);
+        }
+
+        // Trigonometric Calculation Engine
+        function calculateAll() {
+            let theta = parseFloat(document.getElementById('input-theta').value) || 0;
+            let phi = parseFloat(document.getElementById('input-phi').value) || 0;
+
+            // Convert to Radians internally for Math operations
+            let radTheta = angleMode === 'deg' ? (theta * Math.PI / 180) : theta;
+            let radPhi = angleMode === 'deg' ? (phi * Math.PI / 180) : phi;
+
+            const s = Math.sin(radTheta);
+            const c = Math.cos(radTheta);
+            const t = Math.tan(radTheta);
+
+            // Primary outputs
+            document.getElementById('val-sin').textContent = formatVal(s);
+            document.getElementById('val-cos').textContent = formatVal(c);
+            document.getElementById('val-tan').textContent = formatVal(t);
+            document.getElementById('val-csc').textContent = formatVal(1 / s);
+            document.getElementById('val-sec').textContent = formatVal(1 / c);
+            document.getElementById('val-cot').textContent = formatVal(1 / t);
+
+            // Double Angle
+            document.getElementById('val-double-sin').textContent = formatVal(2 * s * c);
+            document.getElementById('val-double-cos').textContent = formatVal(c * c - s * s);
+
+            // Half Angle
+            document.getElementById('val-half-sin').textContent = formatVal(Math.sqrt((1 - c) / 2) * (s < 0 ? -1 : 1));
+            document.getElementById('val-half-cos').textContent = formatVal(Math.sqrt((1 + c) / 2) * (c < 0 ? -1 : 1));
+
+            // Sum and Difference
+            document.getElementById('val-sum-sin').textContent = formatVal(Math.sin(radTheta + radPhi));
+            document.getElementById('val-diff-cos').textContent = formatVal(Math.cos(radTheta - radPhi));
+        }
+
+        // Triangle Solver Engine (Law of Sines/Cosines)
+        function solveTriangle() {
+            let a = parseFloat(document.getElementById('tri-a').value) || 0;
+            let b = parseFloat(document.getElementById('tri-b').value) || 0;
+            let c = parseFloat(document.getElementById('tri-c').value) || 0;
+            let C_angle = parseFloat(document.getElementById('tri-C-angle').value) || 0;
+
+            let A = 0, B = 0, C = 0, area = 0;
+
+            // Case A: SSS (c is provided, C-angle is empty)
+            if (c > 0 && isNaN(parseFloat(document.getElementById('tri-C-angle').value))) {
+                document.getElementById('tri-C-angle').placeholder = "Disabled";
+                if (a + b > c && a + c > b && b + c > a) {
+                    // Law of Cosines
+                    C = Math.acos((a * a + b * b - c * c) / (2 * a * b));
+                    A = Math.acos((b * b + c * c - a * a) / (2 * b * c));
+                    B = Math.PI - A - C;
+
+                    // Heron's Formula for Area
+                    let s = (a + b + c) / 2;
+                    area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+                }
+            }
+            // Case B: SAS (C-angle is provided, c is ignored)
+            else if (C_angle > 0) {
+                C = angleMode === 'deg' ? (C_angle * Math.PI / 180) : C_angle;
+                // Law of Cosines to solve side c
+                c = Math.sqrt(a * a + b * b - 2 * a * b * Math.cos(C));
+                document.getElementById('tri-c').value = formatVal(c);
+
+                A = Math.asin((a * Math.sin(C)) / c);
+                B = Math.PI - A - C;
+                area = 0.5 * a * b * Math.sin(C);
+            }
+
+            // Display results
+            if (A > 0 && B > 0 && C > 0) {
+                const multiplier = angleMode === 'deg' ? (180 / Math.PI) : 1;
+                document.getElementById('res-A').textContent = formatVal(A * multiplier);
+                document.getElementById('res-B').textContent = formatVal(B * multiplier);
+                document.getElementById('res-C').textContent = formatVal(C * multiplier);
+                document.getElementById('res-area').textContent = formatVal(area);
+
+                // Map coordinates for procedural drawing
+                calculateTriangleCoordinates(a, b, C);
+            } else {
+                document.getElementById('res-A').textContent = "ERROR";
+                document.getElementById('res-B').textContent = "ERROR";
+                document.getElementById('res-C').textContent = "ERROR";
+                document.getElementById('res-area').textContent = "ERROR";
+            }
+        }
+
+        function calculateTriangleCoordinates(a, b, C_rad) {
+            // Coordinate mapping: Vertex C is at origin (0,0)
+            // Vertex A lies along the positive x-axis at (b, 0)
+            // Vertex B coordinates are (a * cos(C), a * sin(C))
+            let x1 = 0, y1 = 0; // Vertex C
+            let x2 = b, y2 = 0; // Vertex A
+            let x3 = a * Math.cos(C_rad), y3 = a * Math.sin(C_rad); // Vertex B
+
+            // Scale coordinates to fit 220px bounding box
+            const minX = Math.min(x1, x2, x3);
+            const maxX = Math.max(x1, x2, x3);
+            const minY = Math.min(y1, y2, y3);
+            const maxY = Math.max(y1, y2, y3);
+
+            const width = maxX - minX;
+            const height = maxY - minY;
+            const scale = 200 / Math.max(width, height);
+
+            // Center inside canvas
+            const offsetX = 140 - ((width * scale) / 2) - (minX * scale);
+            const offsetY = 140 + ((height * scale) / 2) - (maxY * scale);
+
+            triVerts.x1 = x1 * scale + offsetX;
+            triVerts.y1 = -y1 * scale + offsetY;
+            triVerts.x2 = x2 * scale + offsetX;
+            triVerts.y2 = -y2 * scale + offsetY;
+            triVerts.x3 = x3 * scale + offsetX;
+            triVerts.y3 = -y3 * scale + offsetY;
+        }
+
+        // HTML5 Canvas Procedural Rendering
+        const canvas = document.getElementById('vector-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawFrame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw system clock signal
+            document.getElementById('system-clock').textContent = `${(performance.now()).toFixed(2)} ms // RUNNING`;
+
+            if (solverTab === 'angle') {
+                // Render Unit Circle
+                ctx.strokeStyle = 'rgba(224, 86, 253, 0.2)';
+                ctx.lineWidth = 1;
+
+                // Draw coordinate grid lines
+                ctx.beginPath();
+                ctx.moveTo(140, 0); ctx.lineTo(140, 280);
+                ctx.moveTo(0, 140); ctx.lineTo(280, 140);
+                ctx.stroke();
+
+                // Draw circle
+                ctx.beginPath();
+                ctx.arc(140, 140, 100, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Get angle
+                let theta = parseFloat(document.getElementById('input-theta').value) || 0;
+                let rad = angleMode === 'deg' ? (theta * Math.PI / 180) : theta;
+
+                // Calculate vector coordinates
+                let targetX = 140 + Math.cos(rad) * 100;
+                let targetY = 140 - Math.sin(rad) * 100;
+
+                // Draw vector line
+                ctx.strokeStyle = '#E056FD';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(140, 140);
+                ctx.lineTo(targetX, targetY);
+                ctx.stroke();
+
+                // Draw cosine projection (x-axis)
+                ctx.strokeStyle = '#FF003C';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(140, 140);
+                ctx.lineTo(targetX, 140);
+                ctx.stroke();
+
+                // Draw sine projection (y-axis)
+                ctx.strokeStyle = '#00FFCC';
+                ctx.beginPath();
+                ctx.moveTo(targetX, 140);
+                ctx.lineTo(targetX, targetY);
+                ctx.stroke();
+
+                // Draw target node indicator
+                ctx.fillStyle = '#FF003C';
+                ctx.beginPath();
+                ctx.arc(targetX, targetY, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+            } else {
+                // Render Solved Triangle
+                ctx.strokeStyle = 'rgba(224, 86, 253, 0.2)';
+                ctx.lineWidth = 1;
+
+                // Draw background grid circles
+                for (let i = 1; i <= 4; i++) {
+                    ctx.beginPath();
+                    ctx.arc(140, 140, 30 * i, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                // Draw the computed triangle
+                ctx.strokeStyle = '#E056FD';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(triVerts.x1, triVerts.y1);
+                ctx.lineTo(triVerts.x2, triVerts.y2);
+                ctx.lineTo(triVerts.x3, triVerts.y3);
+                ctx.closePath();
+                ctx.stroke();
+
+                // Draw glowing vertex endpoints
+                ctx.fillStyle = '#FF003C';
+                const verts = [[triVerts.x1, triVerts.y1], [triVerts.x2, triVerts.y2], [triVerts.x3, triVerts.y3]];
+                verts.forEach(v => {
+                    ctx.beginPath();
+                    ctx.arc(v[0], v[1], 4, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            requestAnimationFrame(drawFrame);
+        }
+
+        // Initialize
+        calculateAll();
+        drawFrame();
+    </script>
+    <!-- NEW CODE ADDITIONS END: CONSOLE JAVASCRIPT -->
+</body>
+
+</html>

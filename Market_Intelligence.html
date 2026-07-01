@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white font-mono selection:bg-red-violet selection:text-black">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRID_CORE // MARKET_INTELLIGENCE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-red': '#FF003C',
+                        'red-violet': '#E056FD',
+                        'obsidian': '#000000'
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-outline {
+            outline: 4px solid #FF003C !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden flex flex-col relative pb-16">
+
+    <!-- NEW_CODE_ADDITIONS_START: DEVICE_CONTROLS -->
+    <header class="border-b border-red-violet/30 p-4 bg-black sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-cyber-red rounded-full animate-ping"></span>
+                <h1 class="text-lg font-bold tracking-widest text-red-violet">MARKET_INTELLIGENCE // DASHBOARD</h1>
+            </div>
+            <div class="flex items-center gap-2 border border-red-violet/40 p-1 rounded bg-black">
+                <span class="text-xs px-2 text-white/60">DEVICE_MODE:</span>
+                <button onclick="setDeviceMode('mobile')" id="btn-mobile" class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">MOBILE</button>
+                <button onclick="setDeviceMode('pc')" id="btn-pc" class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all bg-cyber-red text-white">PC_DESKTOP</button>
+                <button onclick="setDeviceMode('console')" id="btn-console" class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">CONSOLE</button>
+            </div>
+        </div>
+    </header>
+    <!-- NEW_CODE_ADDITIONS_END: DEVICE_CONTROLS -->
+
+    <main id="app-container" class="max-w-7xl mx-auto w-full flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 p-6 transition-all duration-300">
+        
+        <!-- Left Column: Radar Map & Coordinate Targeting -->
+        <div class="md:col-span-1 border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col gap-4">
+            <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2">LOCATION_RADAR_NODE</h2>
+            <div class="flex items-center justify-center bg-black/50 border border-red-violet/20 rounded p-2">
+                <canvas id="radar-canvas" width="280" height="280" class="bg-black rounded"></canvas>
+            </div>
+            <div class="flex flex-col gap-2">
+                <span class="text-xs text-white/50">TARGET_COORDINATES:</span>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <span class="p-2 border border-red-violet/20 rounded bg-black" id="coord-x">LAT: 39.0345 N</span>
+                    <span class="p-2 border border-red-violet/20 rounded bg-black" id="coord-y">LON: -76.8912 W</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Columns: Datatable and Distress list -->
+        <div class="md:col-span-2 border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-red-violet/20 pb-2">
+                <h2 class="text-sm font-bold text-cyber-red tracking-wider">DISTRESSED_ASSETS_MANIFEST (BELTSVILLE_MD)</h2>
+                <span class="text-xs px-2 py-0.5 bg-red-violet/20 text-red-violet border border-red-violet/30 rounded">STATUS: CRITICAL</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-white/80 border-collapse" id="data-table">
+                    <thead>
+                        <tr class="border-b border-red-violet/40 text-red-violet uppercase font-bold tracking-wider">
+                            <th class="p-2">TARGET_COORDINATES</th>
+                            <th class="p-2">VALUE</th>
+                            <th class="p-2">UNPAID_RATIO</th>
+                            <th class="p-2">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-red-violet/10 font-mono">
+                        <tr onclick="targetProperty(50, 60, '39.034 N', '-76.891 W')" class="table-row hover:bg-red-violet/10 transition-all cursor-pointer">
+                            <td class="p-2 font-bold text-white">11306 Broken Bow Ct</td>
+                            <td class="p-2">$189.50</td>
+                            <td class="p-2 text-cyber-red">100%</td>
+                            <td class="p-2"><span class="px-1 bg-cyber-red/20 text-cyber-red rounded">COLLECTIONS</span></td>
+                        </tr>
+                        <tr onclick="targetProperty(120, 180, '39.041 N', '-76.882 W')" class="table-row hover:bg-red-violet/10 transition-all cursor-pointer">
+                            <td class="p-2 font-bold text-white">15722 Crabbs Branch</td>
+                            <td class="p-2">$5,000.00</td>
+                            <td class="p-2 text-cyber-red">85%</td>
+                            <td class="p-2"><span class="px-1 bg-red-violet/20 text-red-violet rounded">COMPROMISED</span></td>
+                        </tr>
+                        <tr onclick="targetProperty(200, 100, '39.029 N', '-76.901 W')" class="table-row hover:bg-red-violet/10 transition-all cursor-pointer">
+                            <td class="p-2 font-bold text-white">6505 Belcrest Rd</td>
+                            <td class="p-2">$695.35</td>
+                            <td class="p-2 text-cyber-red">100%</td>
+                            <td class="p-2"><span class="px-1 bg-cyber-red/20 text-cyber-red rounded">LIEN_PENDING</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="border border-red-violet/20 p-4 bg-black rounded">
+                <span class="text-xs text-cyber-red font-bold block mb-1">SOVEREIGN_RECOVERY_PROTOCOL:</span>
+                <p class="text-xs text-white/60 leading-relaxed">
+                    Unpaid structural balances are captured by third-party database nodes. Instantly lock down connected transaction gateways once collection vectors initiate communication.
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="absolute bottom-4 right-4 text-xs font-bold tracking-widest text-red-violet/50">
+        ARCHITECT // VOID_WEAVER
+    </footer>
+
+    <!-- NEW_CODE_ADDITIONS_START: CONSOLE_JAVASCRIPT -->
+    <script>
+        let currentMode = 'pc';
+        let focusableElements = [];
+        let consoleFocusIndex = 0;
+        let radarX = 140;
+        let radarY = 140;
+
+        function setDeviceMode(mode) {
+            currentMode = mode;
+            const container = document.getElementById('app-container');
+            const btns = ['btn-mobile', 'btn-pc', 'btn-console'];
+            
+            btns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                btn.classList.remove('bg-cyber-red', 'text-white');
+            });
+            document.getElementById(`btn-${mode}`).classList.add('bg-cyber-red', 'text-white');
+
+            // Reset focus outlines
+            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
+
+            if (mode === 'mobile') {
+                container.classList.remove('grid-cols-3', 'max-w-7xl');
+                container.classList.add('grid-cols-1', 'max-w-md');
+            } else if (mode === 'pc') {
+                container.classList.remove('grid-cols-1', 'max-w-md');
+                container.classList.add('grid-cols-3', 'max-w-7xl');
+            } else if (mode === 'console') {
+                container.classList.remove('grid-cols-1', 'max-w-md');
+                container.classList.add('grid-cols-3', 'max-w-7xl');
+                initializeConsoleNavigation();
+            }
+        }
+
+        function initializeConsoleNavigation() {
+            focusableElements = Array.from(document.querySelectorAll('.table-row'));
+            consoleFocusIndex = 0;
+            updateConsoleFocus();
+        }
+
+        function updateConsoleFocus() {
+            if (currentMode !== 'console') return;
+            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
+            if (focusableElements[consoleFocusIndex]) {
+                focusableElements[consoleFocusIndex].classList.add('custom-outline');
+                focusableElements[consoleFocusIndex].focus();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (currentMode !== 'console') return;
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                e.preventDefault();
+                consoleFocusIndex = (consoleFocusIndex + 1) % focusableElements.length;
+                updateConsoleFocus();
+            } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                e.preventDefault();
+                consoleFocusIndex = (consoleFocusIndex - 1 + focusableElements.length) % focusableElements.length;
+                updateConsoleFocus();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (focusableElements[consoleFocusIndex]) {
+                    focusableElements[consoleFocusIndex].click();
+                }
+            }
+        });
+
+        // HTML5 Canvas Radar Rendering
+        const canvas = document.getElementById('radar-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawRadar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background grid circles
+            ctx.strokeStyle = 'rgba(224, 86, 253, 0.2)';
+            ctx.lineWidth = 1;
+            for(let i = 1; i <= 4; i++) {
+                ctx.beginPath();
+                ctx.arc(140, 140, 30 * i, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Draw axis lines
+            ctx.beginPath();
+            ctx.moveTo(140, 0);
+            ctx.lineTo(140, 280);
+            ctx.moveTo(0, 140);
+            ctx.lineTo(280, 140);
+            ctx.stroke();
+
+            // Draw active lock sweeping circle
+            const radius = (Date.now() / 20) % 140;
+            ctx.strokeStyle = 'rgba(224, 86, 253, 0.4)';
+            ctx.beginPath();
+            ctx.arc(140, 140, radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Draw target node indicator
+            ctx.fillStyle = '#FF003C';
+            ctx.beginPath();
+            ctx.arc(radarX, radarY, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw target crosshairs
+            ctx.strokeStyle = '#FF003C';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(radarX, radarY, 12, 0, Math.PI * 2);
+            ctx.moveTo(radarX - 18, radarY);
+            ctx.lineTo(radarX + 18, radarY);
+            ctx.moveTo(radarX, radarY - 18);
+            ctx.lineTo(radarX, radarY + 18);
+            ctx.stroke();
+
+            requestAnimationFrame(drawRadar);
+        }
+
+        function targetProperty(x, y, lat, lon) {
+            radarX = x;
+            radarY = y;
+            document.getElementById('coord-x').textContent = `LAT: ${lat}`;
+            document.getElementById('coord-y').textContent = `LON: ${lon}`;
+        }
+
+        // Initialize
+        drawRadar();
+    </script>
+    <!-- NEW_CODE_ADDITIONS_END: CONSOLE_JAVASCRIPT -->
+</body>
+</html>

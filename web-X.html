@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white font-mono selection:bg-red-violet selection:text-black">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign System: CLI Core</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .text-cyber-red {
+            color: #FF003C;
+        }
+
+        .text-red-violet {
+            color: #E056FD;
+        }
+
+        .border-red-violet {
+            border-color: rgba(224, 86, 253, 0.3);
+        }
+
+        .custom-outline {
+            outline: 4px solid #FF003C !important;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-red': '#FF003C',
+                        'red-violet': '#E056FD',
+                        'obsidian': '#000000'
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen overflow-x-hidden flex flex-col relative pb-16">
+
+
+    <!-- NEW CODE ADDITIONS START: DEVICE CONTROLS -->
+    <header class="border-b border-red-violet/30 p-4 bg-black sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-cyber-red rounded-full animate-ping"></span>
+                <h1 class="text-lg font-bold tracking-widest text-red-violet">SOVEREIGN CLI // COMPILER</h1>
+            </div>
+            <div class="flex items-center gap-2 border border-red-violet/40 p-1 rounded bg-black">
+                <span class="text-xs px-2 text-white/60">DEVICE MODE:</span>
+                <button onclick="setDeviceMode('mobile')" id="btn-mobile"
+                    class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">MOBILE</button>
+                <button onclick="setDeviceMode('pc')" id="btn-pc"
+                    class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">PC</button>
+                <button onclick="setDeviceMode('console')" id="btn-console"
+                    class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">CONSOLE</button>
+            </div>
+        </div>
+    </header>
+    <!-- NEW CODE ADDITIONS END: DEVICE CONTROLS -->
+
+
+    <main id="app-container"
+        class="max-w-5xl mx-auto w-full flex-grow flex flex-col gap-6 p-6 transition-all duration-300">
+
+        <!-- Tool Selection Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- yt-dlp compiler panel -->
+            <div class="border border-red-violet/30 p-4 bg-black rounded flex flex-col gap-4">
+                <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2">YT-DLP
+                    COMMAND COMPILER</h2>
+
+                <div class="flex flex-col gap-3 text-xs">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase">Target URL Address:</label>
+                        <input type="text" id="ytdlp-url"
+                            value="https://www.youtube.com/playlist?list=Sovereignty Manual"
+                            class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase">Export Stream Type:</label>
+                        <select id="ytdlp-format"
+                            class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+                            <option value="max-video">Highest Quality Video + Audio (MP4)</option>
+                            <option value="extract-audio">M4A Audio Stream Extraction</option>
+                            <option value="playlist-mp4">Full Playlist Download (MP4)</option>
+                        </select>
+                    </div>
+
+
+                    <button onclick="generateYtdlpCommand()"
+                        class="cli-button w-full bg-cyber-red text-white py-2 font-bold hover:bg-red-violet transition-all uppercase tracking-wider rounded">Generate
+                        Command</button>
+                </div>
+            </div>
+
+
+            <!-- ffmpeg compiler panel -->
+            <div class="border border-red-violet/30 p-4 bg-black rounded flex flex-col gap-4">
+                <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2">FFMPEG
+                    TRANSCODE COMPILER</h2>
+
+                <div class="flex flex-col gap-3 text-xs">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50">INPUT FILE NAME:</label>
+                        <input type="text" id="ffmpeg-input" value="raw footage.mov"
+                            class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-white/50">START TIME (SS):</label>
+                            <input type="text" id="ffmpeg-start" value="00:00:30"
+                                class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-white/50">END TIME (TO):</label>
+                            <input type="text" id="ffmpeg-end" value="00:01:45"
+                                class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+                        </div>
+                    </div>
+
+
+                    <button onclick="generateFfmpegCommand()"
+                        class="cli-button w-full bg-cyber-red text-white py-2 font-bold hover:bg-red-violet transition-all uppercase tracking-wider rounded">Generate
+                        Command</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Command Terminal Output -->
+        <section class="border border-red-violet/30 p-4 bg-black rounded flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-red-violet/20 pb-2">
+                <h2 class="text-sm font-bold text-red-violet tracking-wider">TERMINAL OUTPUT STREAM</h2>
+                <button onclick="copyToClipboard()"
+                    class="cli-button text-xs px-3 py-1 bg-red-violet/20 text-red-violet border border-red-violet/30 hover:border-cyber-red transition-all rounded">COPY
+                    CLIPBOARD</button>
+            </div>
+
+            <div class="bg-black/50 border border-red-violet/20 p-4 rounded min-h-[80px] flex items-center">
+                <code class="text-xs text-cyber-red font-bold overflow-x-auto whitespace-pre-wrap select-all font-mono"
+                    id="cli-display">
+                   yt-dlp "https://www.youtube.com/playlist?list=Sovereignty Manual"
+               </code>
+            </div>
+        </section>
+
+
+    </main>
+
+
+    <footer class="absolute bottom-4 right-4 text-xs font-bold tracking-widest text-red-violet/50">
+        ARCHITECT // VOID WEAVER
+    </footer>
+
+
+    <!-- NEW CODE ADDITIONS START: CONSOLE JAVASCRIPT -->
+    <script>
+        let currentMode = 'pc';
+        let focusableElements = [];
+        let consoleFocusIndex = 0;
+
+
+        function setDeviceMode(mode) {
+            currentMode = mode;
+            const container = document.getElementById('app-container');
+            const btns = ['btn-mobile', 'btn-pc', 'btn-console'];
+
+            btns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                btn.classList.remove('bg-cyber-red', 'text-white');
+            });
+            document.getElementById(`btn-${mode}`).classList.add('bg-cyber-red', 'text-white');
+
+
+            // Reset focus outlines
+            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
+
+
+            if (mode === 'mobile') {
+                container.classList.remove('max-w-5xl');
+                container.classList.add('max-w-md');
+            } else if (mode === 'pc') {
+                container.classList.remove('max-w-md');
+                container.classList.add('max-w-5xl');
+            } else if (mode === 'console') {
+                container.classList.remove('max-w-md');
+                container.classList.add('max-w-5xl');
+                initializeConsoleNavigation();
+            }
+        }
+
+
+        function initializeConsoleNavigation() {
+            focusableElements = Array.from(document.querySelectorAll('.cli-button, input, select'));
+            consoleFocusIndex = 0;
+            updateConsoleFocus();
+        }
+
+
+        function updateConsoleFocus() {
+            if (currentMode !== 'console') return;
+            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
+            if (focusableElements[consoleFocusIndex]) {
+                focusableElements[consoleFocusIndex].classList.add('custom-outline');
+                focusableElements[consoleFocusIndex].focus();
+            }
+        }
+
+
+        document.addEventListener('keydown', (e) => {
+            if (currentMode !== 'console') return;
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                e.preventDefault();
+                consoleFocusIndex = (consoleFocusIndex + 1) % focusableElements.length;
+                updateConsoleFocus();
+            } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                e.preventDefault();
+                consoleFocusIndex = (consoleFocusIndex - 1 + focusableElements.length) % focusableElements.length;
+                updateConsoleFocus();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (focusableElements[consoleFocusIndex]) {
+                    focusableElements[consoleFocusIndex].click();
+                }
+            }
+        });
+
+
+        function generateYtdlpCommand() {
+            const url = document.getElementById('ytdlp-url').value;
+            const format = document.getElementById('ytdlp-format').value;
+            let command = '';
+
+
+            if (format === 'max-video') {
+                command = `yt-dlp "${url}"`;
+            } else if (format === 'extract-audio') {
+                command = `yt-dlp -f 'ba' -x --audio-format m4a "${url}"`;
+            } else if (format === 'playlist-mp4') {
+                command = `yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]" --merge-output-format mp4 --yes-playlist "${url}"`;
+            }
+
+
+            document.getElementById('cli-display').textContent = command;
+        }
+
+
+        function generateFfmpegCommand() {
+            const input = document.getElementById('ffmpeg-input').value;
+            const start = document.getElementById('ffmpeg-start').value;
+            const end = document.getElementById('ffmpeg-end').value;
+
+
+            const command = `ffmpeg -ss ${start} -to ${end} -i "${input}" -c:v libx264 -c:a aac output segment.mp4`;
+            document.getElementById('cli-display').textContent = command;
+        }
+
+
+        function copyToClipboard() {
+            const copyText = document.getElementById('cli-display').textContent.trim();
+            navigator.clipboard.writeText(copyText).then(() => {
+                alert("COMMAND COPIED TO SYSTEM CLIPBOARD");
+            });
+        }
+    </script>
+    <!-- NEW CODE ADDITIONS END: CONSOLE JAVASCRIPT -->
+</body>
+
+</html>

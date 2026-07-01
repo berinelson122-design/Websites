@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white font-mono selection:bg-red-violet selection:text-black">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRID CORE // AGRICULTURE YIELD CALCULATOR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-red': '#FF003C',
+                        'red-violet': '#E056FD',
+                        'obsidian': '#000000'
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-outline {
+            outline: 4px solid #FF003C !important;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            background: #FF003C;
+            cursor: pointer;
+            border-radius: 0;
+            margin-top: -6px;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(224, 86, 253, 0.3);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden flex flex-col relative pb-16">
+
+    <!-- NEW_CODE_ADDITIONS_START: DEVICE_CONTROLS -->
+    <header class="border-b border-red-violet/30 p-4 bg-black sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-cyber-red rounded-full animate-ping"></span>
+                <h1 class="text-lg font-bold tracking-widest text-red-violet">NAR_ECOSYSTEM // MODELER</h1>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- Unit System Toggle -->
+                <div class="flex items-center gap-2 border border-cyber-red/40 p-1 rounded bg-black">
+                    <button onclick="setUnitSystem('metric')" id="btn-metric"
+                        class="px-3 py-1 text-xs rounded border border-transparent transition-all bg-cyber-red text-white">METRIC</button>
+                    <button onclick="setUnitSystem('imperial')" id="btn-imperial"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all text-white/60">IMPERIAL</button>
+                </div>
+
+                <!-- Device Mode Controls (Console Removed) -->
+                <div class="flex items-center gap-2 border border-red-violet/40 p-1 rounded bg-black">
+                    <span class="text-xs px-2 text-white/60">DEVICE:</span>
+                    <button onclick="setDeviceMode('mobile')" id="btn-mobile"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">MOBILE</button>
+                    <button onclick="setDeviceMode('pc')" id="btn-pc"
+                        class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all bg-cyber-red text-white">PC</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- NEW_CODE_ADDITIONS_END: DEVICE_CONTROLS -->
+
+    <main id="app-container"
+        class="max-w-7xl mx-auto w-full flex-grow grid grid-cols-1 md:grid-cols-2 gap-6 p-6 transition-all duration-300">
+
+        <!-- LEFT COLUMN: Botanical/Pasture Yield Engine -->
+        <section class="border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col gap-4">
+            <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2">BOTANICAL &
+                PASTURE YIELD ENGINE</h2>
+
+            <div class="flex flex-col gap-4 text-xs font-mono">
+                <!-- Farm Area -->
+                <div class="flex flex-col gap-1 border border-red-violet/20 p-3 bg-red-violet/5 rounded">
+                    <label class="text-white font-bold uppercase flex justify-between">
+                        <span>Cultivation Area</span>
+                        <span id="label-area-unit" class="text-cyber-red">Square Meters (m²)</span>
+                    </label>
+                    <input type="number" id="input-area" value="100" min="1" oninput="calculateYield()"
+                        class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded mt-1">
+                </div>
+
+                <!-- Crop/Pasture Selection Node -->
+                <div class="flex flex-col gap-1 border border-red-violet/20 p-3 bg-red-violet/5 rounded">
+                    <label class="text-white font-bold uppercase">Select Target Production Model:</label>
+                    <select id="crop-type" onchange="calculateYield()"
+                        class="bg-black border border-red-violet/40 p-2 text-white focus:outline-none focus:border-cyber-red font-mono rounded mt-1">
+                        <!-- Plant Crops -->
+                        <option value="celery">Celery (Baseline Index / Highly Hydrated)</option>
+                        <option value="tomatoes">Tomatoes (High Moisture / Moderate Density)</option>
+                        <option value="potatoes">Potatoes (Apex Starch Yield / Subterranean Tuber)</option>
+                        <option value="corn">Corn (High Carbon Residue / Grain Crop)</option>
+                        <option value="bananas">Bananas (Tropical Canopy / High Potassium)</option>
+                        <option value="berries">Various Berries (High Value / Low Mass Yield)</option>
+                        <option value="otherFruits">Other Orchard Fruits (Standard Canopy Index)</option>
+                        <!-- Grass-Fed Animal Outputs -->
+                        <option value="beef">Grass-Fed Beef (Ruminant Muscle Meat)</option>
+                        <option value="chicken">Pastured Chicken (Poultry / Soft Tissue)</option>
+                        <option value="sheep">Pastured Sheep (Ruminant Lamb / Mutton)</option>
+                        <option value="milk">Pastured Raw Milk (Unpasteurized Liquid Current)</option>
+                        <option value="eggs">Pastured Eggs (Multivitamin Executable)</option>
+                        <option value="animalFat">Grass-Fed Animal Fat (Raw Suet / Tallow)</option>
+                        <option value="butter">Pastured Butter (High-Fidelity Lipids)</option>
+                    </select>
+                </div>
+
+                <!-- Solid Amendments -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Biochar <span
+                                class="unit-mass">(kg)</span></label>
+                        <input type="number" id="in-biochar" value="50" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Manure <span
+                                class="unit-mass">(kg)</span></label>
+                        <input type="number" id="in-manure" value="100" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Rock Dust <span
+                                class="unit-mass">(kg)</span></label>
+                        <input type="number" id="in-rockdust" value="20" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                </div>
+
+                <!-- Liquid Amendments -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Urine (1:10) <span
+                                class="unit-vol">(L)</span></label>
+                        <input type="number" id="in-urine" value="100" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Fish Hydrolysate <span
+                                class="unit-vol">(L)</span></label>
+                        <input type="number" id="in-fish" value="5" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Plant Waste Fluid <span
+                                class="unit-vol">(L)</span></label>
+                        <input type="number" id="in-plantfluid" value="15" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Calcium Acetate <span
+                                class="unit-vol">(L)</span></label>
+                        <input type="number" id="in-calcium" value="2" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                </div>
+
+                <!-- Yield Output -->
+                <div class="mt-2 border border-cyber-red p-4 bg-cyber-red/10 rounded flex flex-col items-center">
+                    <span class="text-xs text-white/60 mb-1" id="out-yield-label">PROJECTED BIOMASS YIELD</span>
+                    <span class="text-3xl font-bold text-cyber-red" id="out-yield">0.00</span>
+                    <span class="text-xs text-white/50 mt-1" id="out-yield-unit">Kilograms (kg)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: Anaerobic Digester -->
+        <section class="border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col gap-4">
+            <h2 class="text-sm font-bold text-cyber-red tracking-wider border-b border-cyber-red/20 pb-2">ANAEROBIC
+                DIGESTER (BIOGAS REACTOR)</h2>
+
+            <div class="flex flex-col gap-4 text-xs flex-grow font-mono">
+
+                <p class="text-white/60 leading-relaxed border-l-2 border-red-violet pl-2">
+                    Input raw organic waste parameters to calculate microbial methane (CH4) synthesis and liquid
+                    bio-fertilizer recovery.
+                </p>
+
+                <!-- Digester Inputs -->
+                <div class="flex flex-col gap-3 border border-red-violet/20 p-3 rounded bg-black">
+                    <div class="flex flex-col gap-1">
+                        <div class="flex justify-between">
+                            <label class="text-white/80 uppercase">Food Waste <span
+                                    class="unit-mass">(kg)</span></label>
+                            <span class="text-cyber-red" id="val-food">50</span>
+                        </div>
+                        <input type="range" id="slide-food" min="0" max="500" value="50" oninput="updateDigesterUI()">
+                    </div>
+                    <div class="flex flex-col gap-1 mt-2">
+                        <div class="flex justify-between">
+                            <label class="text-white/80 uppercase">Animal Manure <span
+                                    class="unit-mass">(kg)</span></label>
+                            <span class="text-cyber-red" id="val-manure">100</span>
+                        </div>
+                        <input type="range" id="slide-manure" min="0" max="1000" value="100"
+                            oninput="updateDigesterUI()">
+                    </div>
+                    <div class="flex flex-col gap-1 mt-2">
+                        <div class="flex justify-between">
+                            <label class="text-white/80 uppercase">Green Biomass <span
+                                    class="unit-mass">(kg)</span></label>
+                            <span class="text-cyber-red" id="val-biomass">75</span>
+                        </div>
+                        <input type="range" id="slide-biomass" min="0" max="500" value="75"
+                            oninput="updateDigesterUI()">
+                    </div>
+                </div>
+
+                <!-- Digester Outputs -->
+                <div class="grid grid-cols-2 gap-4 mt-auto">
+                    <div class="border border-red-violet/40 p-3 bg-black rounded flex flex-col">
+                        <span class="text-[10px] text-white/50 block mb-1">METHANE (CH4) OUTPUT</span>
+                        <span class="text-xl font-bold text-white" id="out-methane">0.00</span>
+                        <span class="text-[10px] text-white/40 unit-gas">Cubic Meters (m³)</span>
+                    </div>
+                    <div class="border border-red-violet/40 p-3 bg-black rounded flex flex-col">
+                        <span class="text-[10px] text-white/50 block mb-1">CARBON DIOXIDE (CO2)</span>
+                        <span class="text-xl font-bold text-white/60" id="out-co2">0.00</span>
+                        <span class="text-[10px] text-white/40 unit-gas">Cubic Meters (m³)</span>
+                    </div>
+                    <div
+                        class="col-span-2 border border-red-violet/40 p-3 bg-red-violet/10 rounded flex flex-col items-center">
+                        <span class="text-xs text-red-violet font-bold block mb-1">LIQUID DIGESTATE
+                            (BIO-FERTILIZER)</span>
+                        <span class="text-2xl font-bold text-white" id="out-digestate">0.00</span>
+                        <span class="text-xs text-white/50 unit-vol">Liters (L)</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="absolute bottom-4 right-4 text-xs font-bold tracking-widest text-red-violet/50">
+        ARCHITECT // VOID_WEAVER
+    </footer>
+
+    <script>
+        // System State
+        let currentMode = 'pc';
+        let currentSystem = 'metric';
+
+        // Constants & Conversion Rates
+        const M2_TO_SQFT = 10.7639;
+        const KG_TO_LBS = 2.20462;
+        const L_TO_GAL = 0.264172;
+        const M3_TO_FT3 = 35.3147;
+
+        // Base NAR Yield (kg per square meter)
+        const BASE_YIELD_KG_M2 = 3.5;
+
+        // Biological Crop & Livestock Multipliers
+        const cropSpecifications = {
+            // Plant Crops
+            celery: { multiplier: 1.0, label: "PROJECTED CELERY YIELD" },
+            tomatoes: { multiplier: 1.2, label: "PROJECTED TOMATO YIELD" },
+            potatoes: { multiplier: 1.6, label: "PROJECTED POTATO YIELD" },
+            corn: { multiplier: 0.5, label: "PROJECTED CORN YIELD" },
+            bananas: { multiplier: 0.8, label: "PROJECTED BANANA YIELD" },
+            berries: { multiplier: 0.3, label: "PROJECTED BERRY YIELD" },
+            otherFruits: { multiplier: 0.6, label: "PROJECTED FRUIT YIELD" },
+
+            // Grass-Fed Livestock & Byproducts
+            beef: { multiplier: 0.15, label: "PROJECTED GRASS-FED BEEF YIELD" },
+            chicken: { multiplier: 0.25, label: "PROJECTED PASTURED CHICKEN YIELD" },
+            sheep: { multiplier: 0.12, label: "PROJECTED PASTURED SHEEP YIELD" },
+            milk: { multiplier: 0.45, label: "PROJECTED RAW MILK YIELD" },
+            eggs: { multiplier: 0.35, label: "PROJECTED PASTURED EGG YIELD" },
+            animalFat: { multiplier: 0.05, label: "PROJECTED GRASS-FED TALLOW YIELD" },
+            butter: { multiplier: 0.10, label: "PROJECTED PASTURED BUTTER YIELD" }
+        };
+
+        // Initialization
+        window.onload = () => {
+            setDeviceMode('pc');
+            setUnitSystem('metric');
+        };
+
+        function setDeviceMode(mode) {
+            currentMode = mode;
+            const container = document.getElementById('app-container');
+            const btns = ['btn-mobile', 'btn-pc'];
+
+            btns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                btn.classList.remove('bg-cyber-red', 'text-white');
+            });
+            document.getElementById(`btn-${mode}`).classList.add('bg-cyber-red', 'text-white');
+
+            if (mode === 'mobile') {
+                container.classList.remove('grid-cols-2', 'max-w-7xl');
+                container.classList.add('grid-cols-1', 'max-w-md');
+            } else if (mode === 'pc') {
+                container.classList.remove('grid-cols-1', 'max-w-md');
+                container.classList.add('grid-cols-2', 'max-w-7xl');
+            }
+        }
+
+        function setUnitSystem(system) {
+            const previousSystem = currentSystem;
+            currentSystem = system;
+
+            // UI Button Updates
+            document.getElementById('btn-metric').className = `px-3 py-1 text-xs rounded border border-transparent transition-all ${system === 'metric' ? 'bg-cyber-red text-white' : 'text-white/60 hover:border-cyber-red'}`;
+            document.getElementById('btn-imperial').className = `px-3 py-1 text-xs rounded border border-transparent transition-all ${system === 'imperial' ? 'bg-cyber-red text-white' : 'text-white/60 hover:border-cyber-red'}`;
+
+            // Labels Update
+            document.getElementById('label-area-unit').textContent = system === 'metric' ? 'Square Meters (m²)' : 'Square Feet (ft²)';
+            document.getElementById('out-yield-unit').textContent = system === 'metric' ? 'Kilograms (kg)' : 'Pounds (lbs)';
+
+            document.querySelectorAll('.unit-mass').forEach(el => el.textContent = system === 'metric' ? '(kg)' : '(lbs)');
+            document.querySelectorAll('.unit-vol').forEach(el => el.textContent = system === 'metric' ? '(L)' : '(Gal)');
+            document.querySelectorAll('.unit-gas').forEach(el => el.textContent = system === 'metric' ? 'Cubic Meters (m³)' : 'Cubic Feet (ft³)');
+
+            // Convert Values in Input Fields to maintain logic
+            convertInputs(previousSystem, system);
+
+            // Recalculate
+            calculateYield();
+            updateDigesterUI();
+        }
+
+        function convertInputs(fromSys, toSys) {
+            if (fromSys === toSys) return;
+
+            const areaInput = document.getElementById('input-area');
+            const biochar = document.getElementById('in-biochar');
+            const manure = document.getElementById('in-manure');
+            const rockdust = document.getElementById('in-rockdust');
+            const urine = document.getElementById('in-urine');
+            const fish = document.getElementById('in-fish');
+            const plantfluid = document.getElementById('in-plantfluid');
+            const calcium = document.getElementById('in-calcium');
+
+            // Sliders for Digester
+            const slideFood = document.getElementById('slide-food');
+            const slideManure = document.getElementById('slide-manure');
+            const slideBiomass = document.getElementById('slide-biomass');
+
+            if (toSys === 'imperial') {
+                areaInput.value = (areaInput.value * M2_TO_SQFT).toFixed(1);
+
+                biochar.value = (biochar.value * KG_TO_LBS).toFixed(1);
+                manure.value = (manure.value * KG_TO_LBS).toFixed(1);
+                rockdust.value = (rockdust.value * KG_TO_LBS).toFixed(1);
+
+                urine.value = (urine.value * L_TO_GAL).toFixed(1);
+                fish.value = (fish.value * L_TO_GAL).toFixed(1);
+                plantfluid.value = (plantfluid.value * L_TO_GAL).toFixed(1);
+                calcium.value = (calcium.value * L_TO_GAL).toFixed(1);
+
+                updateSliderBounds(slideFood, 0, 1100, (slideFood.value * KG_TO_LBS));
+                updateSliderBounds(slideManure, 0, 2200, (slideManure.value * KG_TO_LBS));
+                updateSliderBounds(slideBiomass, 0, 1100, (slideBiomass.value * KG_TO_LBS));
+
+            } else {
+                areaInput.value = (areaInput.value / M2_TO_SQFT).toFixed(1);
+
+                biochar.value = (biochar.value / KG_TO_LBS).toFixed(1);
+                manure.value = (manure.value / KG_TO_LBS).toFixed(1);
+                rockdust.value = (rockdust.value / KG_TO_LBS).toFixed(1);
+
+                urine.value = (urine.value / L_TO_GAL).toFixed(1);
+                fish.value = (fish.value / L_TO_GAL).toFixed(1);
+                plantfluid.value = (plantfluid.value / L_TO_GAL).toFixed(1);
+                calcium.value = (calcium.value / L_TO_GAL).toFixed(1);
+
+                updateSliderBounds(slideFood, 0, 500, (slideFood.value / KG_TO_LBS));
+                updateSliderBounds(slideManure, 0, 1000, (slideManure.value / KG_TO_LBS));
+                updateSliderBounds(slideBiomass, 0, 500, (slideBiomass.value / KG_TO_LBS));
+            }
+        }
+
+        function updateSliderBounds(slider, min, max, val) {
+            slider.min = min;
+            slider.max = max;
+            slider.value = val;
+        }
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+        }
+
+        // === ENGINE 1: BOTANICAL/PASTURE YIELD ===
+        function calculateYield() {
+            // 1. Get raw inputs
+            let area = parseFloat(document.getElementById('input-area').value) || 0;
+            let biochar = parseFloat(document.getElementById('in-biochar').value) || 0;
+            let manure = parseFloat(document.getElementById('in-manure').value) || 0;
+            let rockdust = parseFloat(document.getElementById('in-rockdust').value) || 0;
+            let urine = parseFloat(document.getElementById('in-urine').value) || 0;
+            let fish = parseFloat(document.getElementById('in-fish').value) || 0;
+            let plantfluid = parseFloat(document.getElementById('in-plantfluid').value) || 0;
+            let calcium = parseFloat(document.getElementById('in-calcium').value) || 0;
+
+            const targetCrop = document.getElementById('crop-type').value;
+            const specs = cropSpecifications[targetCrop];
+
+            // Update Output Label
+            document.getElementById('out-yield-label').textContent = specs.label;
+
+            // 2. Normalize inputs to metric for the mathematical model
+            if (currentSystem === 'imperial') {
+                area /= M2_TO_SQFT;
+                biochar /= KG_TO_LBS;
+                manure /= KG_TO_LBS;
+                rockdust /= KG_TO_LBS;
+                urine /= L_TO_GAL;
+                fish /= L_TO_GAL;
+                plantfluid /= L_TO_GAL;
+                calcium /= L_TO_GAL;
+            }
+
+            // 3. Mathematical Model (Diminishing returns logic based on density per square meter)
+            const baseYield = area * BASE_YIELD_KG_M2 * specs.multiplier;
+
+            // Densities per m2
+            const dBiochar = area > 0 ? biochar / area : 0;
+            const dManure = area > 0 ? manure / area : 0;
+            const dRockdust = area > 0 ? rockdust / area : 0;
+            const dLiquidTotal = area > 0 ? (urine + fish + plantfluid + calcium) / area : 0;
+
+            // Multipliers (Caps ensure extreme inputs don't create infinite yield)
+            const mBiochar = Math.min(dBiochar * 0.4, 0.35); // Max 35% boost
+            const mManure = Math.min(dManure * 0.15, 0.25);  // Max 25% boost
+            const mRockdust = Math.min(dRockdust * 0.8, 0.20); // Max 20% boost
+            const mLiquids = Math.min(dLiquidTotal * 0.5, 0.40); // Max 40% boost
+
+            // Calculate final metric yield
+            let finalYieldKg = baseYield * (1 + mBiochar + mManure + mRockdust + mLiquids);
+
+            // 4. Convert back if needed and display
+            if (currentSystem === 'imperial') {
+                finalYieldKg *= KG_TO_LBS;
+            }
+
+            document.getElementById('out-yield').textContent = formatNumber(finalYieldKg);
+        }
+
+        // === ENGINE 2: ANAEROBIC DIGESTER ===
+        function updateDigesterUI() {
+            let food = parseFloat(document.getElementById('slide-food').value) || 0;
+            let manure = parseFloat(document.getElementById('slide-manure').value) || 0;
+            let biomass = parseFloat(document.getElementById('slide-biomass').value) || 0;
+
+            // Update Labels
+            document.getElementById('val-food').textContent = formatNumber(food);
+            document.getElementById('val-manure').textContent = formatNumber(manure);
+            document.getElementById('val-biomass').textContent = formatNumber(biomass);
+
+            calculateDigester(food, manure, biomass);
+        }
+
+        function calculateDigester(food, manure, biomass) {
+            // Normalize to metric for calculation
+            if (currentSystem === 'imperial') {
+                food /= KG_TO_LBS;
+                manure /= KG_TO_LBS;
+                biomass /= KG_TO_LBS;
+            }
+
+            const totalInputMassKg = food + manure + biomass;
+
+            // Scientific approximations for anaerobic digestion
+            // ~0.35 cubic meters of biogas per kg of volatile solids
+            const biogasM3 = totalInputMassKg * 0.35;
+
+            // Biogas composition is typically 60% Methane, 40% CO2
+            let methaneM3 = biogasM3 * 0.60;
+            let co2M3 = biogasM3 * 0.40;
+
+            // Digestate recovery is roughly 90% of input mass converted to Liters
+            let digestateLiters = totalInputMassKg * 0.90;
+
+            // Convert to Imperial if active
+            if (currentSystem === 'imperial') {
+                methaneM3 *= M3_TO_FT3;
+                co2M3 *= M3_TO_FT3;
+                digestateLiters *= L_TO_GAL;
+            }
+
+            // Display
+            document.getElementById('out-methane').textContent = formatNumber(methaneM3);
+            document.getElementById('out-co2').textContent = formatNumber(co2M3);
+            document.getElementById('out-digestate').textContent = formatNumber(digestateLiters);
+        }
+
+    </script>
+</body>
+
+</html>
