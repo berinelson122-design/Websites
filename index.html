@@ -204,15 +204,15 @@
             <span class="label">// PROJECT: FJH SYNTHESIS REACTOR</span>
             <p>Flash-Joule Heating reactor simulation. Transmutes carbon feedstocks into valuable turbostratic graphene.
             </p>
-            <a href="/Graphene-Synthess.html" class="button-link">RUN REACTOR</a>
+            <a href="/Graphene-Synthesis.html" class="button-link">RUN REACTOR</a>
         </div>
 
         <!-- ARSENAL_NODE: GASIFIER MODELER -->
         <div class="directory-box">
-            <span class="label">// PROJECT: WOOD PYROLYSIS</span>
+            <span class="label">// PROJECT: GASIFIER MODELER</span>
             <p>Thermo-chemical cracking simulator. Computes accurate yields of solids, pyroligneous liquids, and
                 producer gases.</p>
-            <a href="/Gasifier.html" class="button-link">RUN GASIFER</a>
+            <a href="/Gasifier.html" class="button-link">RUN REACTOR</a>
         </div>
 
         <!-- ARSENAL_NODE: NAR MODELER -->
@@ -234,6 +234,48 @@
             <span class="label">// PROJECT: SOVEREIGN CLI COMPILER</span>
             <p>Automated command compiler for yt-dlp media extraction and ffmpeg video transcoding.</p>
             <a href="/web-X.html" class="button-link">RUN COMPILER</a>
+        </div>
+
+        <!-- ARSENAL_NODE: SUBSYSTEM RUNNER -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: SUBSYSTEM RUNNER</span>
+            <p>Custom platformer engine. Wall sliding, dashing, and real-time obstacle avoidance.</p>
+            <a href="https://subsystem-runner.vercel.app/" class="button-link">RUN SUBSYSTEM</a>
+        </div>
+
+        <!-- ARSENAL_NODE: FIREWALL BASTION -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: FIREWALL BASTION</span>
+            <p>Tactical tower defense protocol protecting core databases from incoming compromised data packets.</p>
+            <a href="https://firewall-bastion.vercel.app/" class="button-link">RUN BASTION</a>
+        </div>
+
+        <!-- ARSENAL_NODE: ENTROPY PURGE -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: ENTROPY PURGE</span>
+            <p>High-performance, procedurally generated action loop featuring dynamic upgrade patches.</p>
+            <a href="https://entropy-purge.vercel.app/" class="button-link">RUN PURGE</a>
+        </div>
+
+        <!-- ARSENAL_NODE: VOID SCRAPER -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: VOID SCRAPER</span>
+            <p>Phaser-engineered survival simulator utilizing procedural speed scaling and local sound synthesis.</p>
+            <a href="https://void-scraper.vercel.app/" class="button-link">RUN SCRAPER</a>
+        </div>
+
+        <!-- ARSENAL_NODE: DATA DEFRAG -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: DATA DEFRAG</span>
+            <p>Real-time physics engine implementing collision-response pipelines and mass consolidation mechanics.</p>
+            <a href="https://data-defrag.vercel.app/" class="button-link">RUN DEFRAG</a>
+        </div>
+
+        <!-- ARSENAL_NODE: TELLURIC SYNC -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: TELLURIC SYNC</span>
+            <p>Rhythm-bullet hybrid visualizer synchronized with localized audio-synthesized drum patterns.</p>
+            <a href="https://telluric-sync.vercel.app/" class="button-link">RUN SYNC</a>
         </div>
 
         <!-- SUB-NODE MATRIX (x1.html - x10.html) -->
@@ -280,7 +322,7 @@
         const log = document.getElementById('log');
         const input = document.getElementById('cmd-input');
         const validCommands = {
-            'help': 'Available logic-gates: [status, domus, clear, whoami, graphene, gasifier, market, nar, trig, web-x, x1-x10]',
+            'help': 'Available logic-gates: [status, domus, clear, whoami, graphene, gasifier, market, nar, trig, web-x, subsystem, bastion, purge, scraper, defrag, sync, x1-x10]',
             'status': 'CHASSIS: 125lb // AETHER: 88% // FOCUS: OPTIMAL',
             'domus': 'REDIRECTING TO NEW WORLD REGISTRY...',
             'whoami': 'IDENTITY: ARCHITECT // VOID WEAVER',
@@ -290,6 +332,12 @@
             'nar': 'BOOTING ECOSYSTEM MODELER...',
             'trig': 'OPENING MASTER GEOMETRY SOLVER...',
             'web-x': 'COMPILING CLI INSTRUCTIONS...',
+            'subsystem': 'UPLINKING TO SUBSYSTEM RUNNER...',
+            'bastion': 'INITIALIZING BASTION PROTOCOL...',
+            'purge': 'BOOTING ENTROPY PURGE SEQUENCE...',
+            'scraper': 'INITIALIZING VOID SCRAPER SIMULATOR...',
+            'defrag': 'RUNNING PHYSICAL DATA DEFRAG...',
+            'sync': 'COMMENCING TELLURIC RYHTHM SYNC...',
             'clear': ''
         };
 
@@ -344,6 +392,24 @@
             }
             if (cmd === 'web-x') {
                 setTimeout(() => window.location.href = '/web-X.html', 1000);
+            }
+            if (cmd === 'subsystem') {
+                setTimeout(() => window.location.href = 'https://subsystem-runner.vercel.app/', 1000);
+            }
+            if (cmd === 'bastion') {
+                setTimeout(() => window.location.href = 'https://firewall-bastion.vercel.app/', 1000);
+            }
+            if (cmd === 'purge') {
+                setTimeout(() => window.location.href = 'https://entropy-purge.vercel.app/', 1000);
+            }
+            if (cmd === 'scraper') {
+                setTimeout(() => window.location.href = 'https://void-scraper.vercel.app/', 1000);
+            }
+            if (cmd === 'defrag') {
+                setTimeout(() => window.location.href = 'https://data-defrag.vercel.app/', 1000);
+            }
+            if (cmd === 'sync') {
+                setTimeout(() => window.location.href = 'https://telluric-sync.vercel.app/', 1000);
             }
             if (subnodeMatch) {
                 setTimeout(() => window.location.href = `/${cmd}.html`, 1000);
