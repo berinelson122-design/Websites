@@ -1,354 +1,234 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-black text-white font-mono selection:bg-red-violet selection:text-black">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRID CORE // STARTUP DOCUMENTATION</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'cyber-red': '#FF003C',
-                        'red-violet': '#E056FD',
-                        'obsidian': '#000000'
-                    },
-                    fontFamily: {
-                        mono: ['"JetBrains Mono"', 'monospace']
-                    }
-                }
+    <title>VOID SYSTEMS // ARCHITECT_NODE</title>
+    <style>
+        /* --- VISUAL_CODE: CSS_REGISTRY --- */
+        :root {
+            --cyber-red: #FF003C;
+            --neon-violet: #E056FD;
+            --void-black: #050505;
+            --text-silver: #E5E5E5;
+        }
+
+        body {
+            background-color: var(--void-black);
+            color: var(--text-silver);
+            font-family: 'Courier New', Courier, monospace;
+            /* Monospace Registry */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* BRUTALIST_SCANLINES */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+            background: linear-gradient(rgba(18, 18, 18, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            opacity: 0.2;
+        }
+
+        header {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px 20px;
+            border-bottom: 2px solid var(--neon-violet);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            margin: 0;
+            text-shadow: 0 0 10px var(--neon-violet);
+        }
+
+        .status-bar {
+            font-size: 10px;
+            color: var(--cyber-red);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 800px;
+            padding: 0 20px;
+            flex-grow: 1;
+        }
+
+        .directory-box {
+            border: 1px solid #333;
+            background: #0a0a0a;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .directory-box:hover {
+            border-color: var(--neon-violet);
+            box-shadow: 0 0 20px rgba(224, 86, 253, 0.1);
+        }
+
+        .label {
+            color: var(--neon-violet);
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .button-link {
+            display: inline-block;
+            background: var(--cyber-red);
+            color: black;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 14px;
+            margin-top: 15px;
+            transition: transform 0.1s;
+        }
+
+        .button-link:hover {
+            background: white;
+            transform: translate(2px, -2px);
+            box-shadow: -4px 4px 0px var(--neon-violet);
+        }
+
+        /* TERMINAL_INPUT_INTERFACE */
+        #terminal {
+            width: 100%;
+            max-width: 800px;
+            background: black;
+            border: 1px solid #222;
+            padding: 15px;
+            color: #00FFcc;
+            font-size: 12px;
+            margin-bottom: 50px;
+        }
+
+        #log {
+            height: 100px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
             }
         }
-    </script>
-    <style>
-        .custom-outline {
-            outline: 4px solid #FF003C !important;
+
+        footer {
+            opacity: 0.3;
+            font-size: 8px;
+            padding-bottom: 20px;
+            text-align: right;
+            width: 100%;
+            max-width: 800px;
         }
     </style>
 </head>
 
-<body class="min-h-screen overflow-x-hidden flex flex-col relative pb-16">
+<body>
 
-
-    <!-- NEW CODE ADDITIONS START: DEVICE CONTROLS -->
-    <header class="border-b border-red-violet/30 p-4 bg-black sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <span class="w-3 h-3 bg-cyber-red rounded-full animate-ping"></span>
-                <h1 class="text-lg font-bold tracking-widest text-red-violet">DOCUMENTATION PORTAL // NODE V1</h1>
-            </div>
-            <div class="flex items-center gap-2 border border-red-violet/40 p-1 rounded bg-black">
-                <span class="text-xs px-2 text-white/60">DEVICE MODE:</span>
-                <button onclick="setDeviceMode('mobile')" id="btn-mobile"
-                    class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">MOBILE</button>
-                <button onclick="setDeviceMode('pc')" id="btn-pc"
-                    class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all bg-cyber-red text-white">PC
-                    DESKTOP</button>
-                <button onclick="setDeviceMode('console')" id="btn-console"
-                    class="px-3 py-1 text-xs rounded border border-transparent hover:border-cyber-red transition-all">CONSOLE</button>
-            </div>
-        </div>
+    <header>
+        <h1>BERI_SYSTEMS</h1>
+        <div class="status-bar">UPLINK: ACTIVE // HARDWARE: APPLE_M2 // REGISTRY: SOVEREIGN</div>
     </header>
-    <!-- NEW CODE ADDITIONS END: DEVICE CONTROLS -->
 
-    <!-- SYSTEM GRID NAVIGATION -->
-    <div class="border-b border-red-violet/30 bg-black/90 p-2 z-40 sticky top-[73px]">
-        <div class="max-w-7xl mx-auto flex flex-wrap gap-4 text-xs font-bold tracking-widest">
-            <span class="text-white/40">ACTIVE NODES:</span>
-            <a href="/" class="text-cyber-red hover:text-white transition-colors">Terminal Core</a>
-            <a href="/Market_Intelligence.html" class="text-red-violet hover:text-white transition-colors">Leadvision
-                Pro</a>
-            <a href="/Graphene-Synthess.html" class="text-red-violet hover:text-white transition-colors">Graphene
-                Reactor</a>
-            <a href="/NAR-yield-calculator.html" class="text-red-violet hover:text-white transition-colors">NAR
-                Modeler</a>
-            <a href="/Trig-Calculator.html" class="text-red-violet hover:text-white transition-colors">Trig Solver</a>
+    <main>
+        <!-- ARSENAL_NODE -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: VOIDMAIDEN</span>
+            <p>High-performance Danmaku engine. Local-first architecture. Optimized for 240FPS neural bus speeds.</p>
+            <a href="https://project-voidshrine-98.vercel.app/" class="button-link">INITIALIZE_ENGINE</a>
         </div>
-    </div>
 
-    <main id="app-container"
-        class="max-w-7xl mx-auto w-full flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 p-6 transition-all duration-300">
+        <!-- MANUAL_VAULT -->
+        <div class="directory-box">
+            <span class="label">// ARCHIVE: GUMROAD_TREASURY</span>
+            <p>Access the bit-perfect manuals for Graphene Synthesis, H3O2 Structuring, and the Iron Ration protocol.
+            </p>
+            <a href="https://berinelson.gumroad.com/" class="button-link">EXTRACT_DATA</a>
+        </div>
 
-        <!-- Left Sidebar: Navigation -->
-        <aside id="sidebar-nav"
-            class="md:col-span-1 border border-red-violet/30 p-4 bg-black/80 rounded flex flex-col gap-4">
-            <div class="relative">
-                <input type="text" id="search-input" oninput="filterNavigation()" placeholder="SEARCH GRIMOIRE..."
-                    class="w-full bg-black border border-red-violet/40 p-2 text-sm text-white focus:outline-none focus:border-cyber-red font-mono rounded">
+        <!-- INTERACTIVE_TERMINAL -->
+        <div id="terminal">
+            <div id="log">> SYSTEM BOOT COMPLETE. AWAITING INPUT...</div>
+            <div style="display: flex;">
+                <span>> </span>
+                <span id="cmd-input"></span><span class="cursor">_</span>
             </div>
-            <nav class="flex flex-col gap-1 overflow-y-auto max-h-[60vh]" id="nav-links">
-                <button onclick="loadSection('node-setup')"
-                    class="nav-item text-left p-2 text-sm text-cyber-red hover:bg-red-violet/10 rounded transition-all font-bold">1
-                    NODE MANAGEMENT</button>
-                <button onclick="loadSection('media-arsenal')"
-                    class="nav-item text-left p-2 text-sm text-white/70 hover:bg-red-violet/10 rounded transition-all">2
-                    MEDIA ARSENAL</button>
-                <button onclick="loadSection('sys-recon')"
-                    class="nav-item text-left p-2 text-sm text-white/70 hover:bg-red-violet/10 rounded transition-all">3
-                    SYSTEM RECON</button>
-                <button onclick="loadSection('permissions')"
-                    class="nav-item text-left p-2 text-sm text-white/70 hover:bg-red-violet/10 rounded transition-all">4
-                    PERMISSIONS SOP</button>
-            </nav>
-        </aside>
-
-
-        <!-- Main Content Area -->
-        <section id="main-content"
-            class="md:col-span-3 border border-red-violet/30 p-6 bg-black/80 rounded flex flex-col gap-6">
-
-            <!-- Section: Node Management -->
-            <article id="sec-node-setup" class="content-sec flex flex-col gap-4">
-                <h2 class="text-2xl font-bold text-red-violet tracking-wide border-b border-red-violet/20 pb-2">1 //
-                    NODE MANAGEMENT SOP</h2>
-                <p class="text-sm text-white/80 leading-relaxed">Establish a clean, isolated Python node for local-first
-                    automation. Always use a dot prefix (.venv) to keep the environment hidden from standard file scans
-                    and recursive logic loops.</p>
-                <div class="bg-black border border-red-violet/20 p-4 rounded-md">
-                    <span class="text-xs text-cyber-red block mb-2">// INITIALIZATION SEQUENCE SHELL</span>
-                    <pre class="text-xs text-white/90 overflow-x-auto whitespace-pre-wrap font-mono">
-python3 -m venv .venv
-source .venv/bin/activate
-which python
-pip install playwright pandas
-pip freeze > requirements.txt
-deactivate</pre>
-                </div>
-            </article>
-
-
-            <!-- Section: Media Arsenal -->
-            <article id="sec-media-arsenal" class="content-sec hidden flex flex-col gap-4">
-                <h2 class="text-2xl font-bold text-red-violet tracking-wide border-b border-red-violet/20 pb-2">2 //
-                    MEDIA ARSENAL EXTRACTION</h2>
-                <p class="text-sm text-white/80 leading-relaxed">De-compile public media assets from target domains.
-                    This sequence bypasses third-party compression scripts and preserves raw, high-fidelity streams.</p>
-                <div class="bg-black border border-red-violet/20 p-4 rounded-md">
-                    <span class="text-xs text-cyber-red block mb-2">// YT-DLP EXTRACTION MANIFEST</span>
-                    <pre class="text-xs text-white/90 overflow-x-auto whitespace-pre-wrap font-mono">
-# Download maximum quality video and audio merged
-yt-dlp "[TARGET URL]"
-
-
-# Extract audio stream only (M4A format conversion)
-yt-dlp -f 'ba' -x --audio-format m4a "[TARGET URL]"
-
-
-# Frame-accurate clip extraction with local re-encoding
-ffmpeg -ss 00:00:40 -to 00:01:50 -i input.mp4 -c:v libx264 -c:a aac output.mp4</pre>
-                </div>
-            </article>
-
-
-            <!-- Section: System Recon -->
-            <article id="sec-sys-recon" class="content-sec hidden flex flex-col gap-4">
-                <h2 class="text-2xl font-bold text-red-violet tracking-wide border-b border-red-violet/20 pb-2">3 //
-                    SYSTEM RECONNAISSANCE</h2>
-                <p class="text-sm text-white/80 leading-relaxed">Query the local hardware node directly. Avoid the lag
-                    of standard system settings wrappers. These commands poll the kernel database immediately to
-                    identify partition capacities and purge useless files.</p>
-
-                <div class="bg-black border border-red-violet/20 p-4 rounded-md">
-                    <span class="text-xs text-cyber-red block mb-2">// THE COMPLETE DF (DISK FREE) COMMAND INDEX</span>
-                    <pre class="text-xs text-white/90 overflow-x-auto whitespace-pre-wrap font-mono">
-# Human-readable binary partition status (1024-byte blocks)
-df -h
-
-# Human-readable decimal partition status (1000-byte blocks)
-df -H
-
-# Target only the partition containing the current active directory
-df -h .
-
-# Local file systems only (suppresses slow network mounts)
-df -lh
-
-# Display inode usage statistics instead of block capacity
-df -i
-
-# Include all system-level and empty file systems
-df -a
-
-# Filter output to display only APFS formatted volumes
-df -t apfs
-
-# Exclude specific file systems from the output
-df -x devfs
-
-# Display space allocation in 1-kilobyte blocks
-df -k
-
-# Display space allocation in megabytes
-df -m
-
-# Display space allocation in gigabytes (macOS specific)
-df -g</pre>
-                </div>
-
-                <div class="bg-black border border-red-violet/20 p-4 rounded-md">
-                    <span class="text-xs text-cyber-red block mb-2">// DIRECTORY CLEANUP AND DISK UTILITIES</span>
-                    <pre class="text-xs text-white/90 overflow-x-auto whitespace-pre-wrap font-mono">
-# Drill-down: List directories sorted by size
-du -sh ~/* | sort -h
-
-# Identify which application holds port 3000
-lsof -i :3000
-
-# Safe homebrew cleanup to purge previous package versions
-brew cleanup
-
-# Purge local hidden Time Machine snapshots
-tmutil listlocalsnapshots /
-sudo tmutil deletelocalsnapshots [DATE_STAMP]
-
-# Clear user application cache directory
-rm -rf ~/Library/Caches/*
-
-# Purge local npm package cache
-rm -rf ~/.npm</pre>
-                </div>
-
-            </article>
-
-
-            <!-- Section: Permissions -->
-            <article id="sec-permissions" class="content-sec hidden flex flex-col gap-4">
-                <h2 class="text-2xl font-bold text-red-violet tracking-wide border-b border-red-violet/20 pb-2">4 //
-                    PERMISSIONS SOP</h2>
-                <p class="text-sm text-white/80 leading-relaxed">Enforce file system boundaries. By default, new shell
-                    files are not executable. You must manually grant permission vectors to the owner.</p>
-                <div class="bg-black border border-red-violet/20 p-4 rounded-md">
-                    <span class="text-xs text-cyber-red block mb-2">// ACCESS_CONTROLS_SHELL</span>
-                    <pre class="text-xs text-white/90 overflow-x-auto whitespace-pre-wrap font-mono">
-# Make a local script executable for the owner only
-chmod +x run automation.sh
-
-
-# Restrict reading and writing of a sensitive database to owner only
-chmod 600 production vault.db
-
-
-# Verify permissions list of current path
-ls -la</pre>
-                </div>
-            </article>
-
-
-        </section>
+        </div>
     </main>
 
-
-    <footer class="absolute bottom-4 right-4 text-xs font-bold tracking-widest text-red-violet/50">
-        ARCHITECT // void_weaver
+    <footer>
+        ARCHITECT // VOID_WEAVER // &copy; 2026 DOMUS_GENESIS
     </footer>
 
-
-    <!-- NEW CODE ADDITIONS START: CONSOLE JAVASCRIPT -->
     <script>
-        let currentMode = 'pc';
-        let focusableElements = [];
-        let consoleFocusIndex = 0;
+        /* --- LOGIC_FLOW: JAVASCRIPT_UPLINK --- */
+        const log = document.getElementById('log');
+        const input = document.getElementById('cmd-input');
+        const validCommands = {
+            'help': 'Available logic-gates: [status, domus, clear, whoami]',
+            'status': 'CHASSIS: 125lb // AETHER: 88% // FOCUS: OPTIMAL',
+            'domus': 'REDIRECTING TO NEW WORLD REGISTRY...',
+            'whoami': 'IDENTITY: ARCHITECT // VOID_WEAVER',
+            'clear': ''
+        };
 
-
-        function setDeviceMode(mode) {
-            currentMode = mode;
-            const container = document.getElementById('app-container');
-            const sidebar = document.getElementById('sidebar-nav');
-            const btns = ['btn-mobile', 'btn-pc', 'btn-console'];
-
-            btns.forEach(btnId => {
-                const btn = document.getElementById(btnId);
-                btn.classList.remove('bg-cyber-red', 'text-white');
-            });
-            document.getElementById(`btn-${mode}`).classList.add('bg-cyber-red', 'text-white');
-
-
-            // Reset console focus outlines
-            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
-
-
-            if (mode === 'mobile') {
-                container.classList.remove('grid-cols-4', 'max-w-7xl');
-                container.classList.add('grid-cols-1', 'max-w-md');
-                sidebar.classList.add('hidden');
-            } else if (mode === 'pc') {
-                container.classList.remove('grid-cols-1', 'max-w-md');
-                container.classList.add('grid-cols-4', 'max-w-7xl');
-                sidebar.classList.remove('hidden');
-            } else if (mode === 'console') {
-                container.classList.remove('grid-cols-1', 'max-w-md');
-                container.classList.add('grid-cols-4', 'max-w-7xl');
-                sidebar.classList.remove('hidden');
-                initializeConsoleNavigation();
-            }
-        }
-
-
-        function initializeConsoleNavigation() {
-            focusableElements = Array.from(document.querySelectorAll('#nav-links button, #search-input'));
-            consoleFocusIndex = 0;
-            updateConsoleFocus();
-        }
-
-
-        function updateConsoleFocus() {
-            if (currentMode !== 'console') return;
-            document.querySelectorAll('.custom-outline').forEach(el => el.classList.remove('custom-outline'));
-            if (focusableElements[consoleFocusIndex]) {
-                focusableElements[consoleFocusIndex].classList.add('custom-outline');
-                focusableElements[consoleFocusIndex].focus();
-            }
-        }
-
-
-        document.addEventListener('keydown', (e) => {
-            if (currentMode !== 'console') return;
-            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-                e.preventDefault();
-                consoleFocusIndex = (consoleFocusIndex + 1) % focusableElements.length;
-                updateConsoleFocus();
-            } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-                e.preventDefault();
-                consoleFocusIndex = (consoleFocusIndex - 1 + focusableElements.length) % focusableElements.length;
-                updateConsoleFocus();
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace') {
+                input.innerText = input.innerText.slice(0, -1);
             } else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (focusableElements[consoleFocusIndex]) {
-                    focusableElements[consoleFocusIndex].click();
-                }
+                executeCommand(input.innerText.toLowerCase().trim());
+                input.innerText = '';
+            } else if (e.key.length === 1) {
+                input.innerText += e.key;
             }
         });
 
+        function executeCommand(cmd) {
+            const response = validCommands[cmd] || `ERROR: '${cmd}' IS NOT A VALID SOVEREIGN COMMAND.`;
 
-        function loadSection(sectionId) {
-            document.querySelectorAll('.content-sec').forEach(sec => sec.classList.add('hidden'));
-            document.getElementById(`sec-${sectionId}`).classList.remove('hidden');
+            if (cmd === 'clear') {
+                log.innerHTML = '';
+                return;
+            }
 
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('text-cyber-red', 'font-bold');
-                item.classList.add('text-white/70');
-            });
-            event.currentTarget.classList.add('text-cyber-red', 'font-bold');
-        }
+            const entry = document.createElement('div');
+            entry.innerHTML = `<span style="color:white">> ${cmd}</span><br>${response}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
 
-
-        function filterNavigation() {
-            const query = document.getElementById('search-input').value.toUpperCase();
-            const links = document.querySelectorAll('.nav-item');
-            links.forEach(link => {
-                const txtValue = link.textContent || link.innerText;
-                if (txtValue.toUpperCase().indexOf(query) > -1) {
-                    link.style.display = "";
-                } else {
-                    link.style.display = "none";
-                }
-            });
+            if (cmd === 'domus') {
+                setTimeout(() => window.location.href = 'https://berinelson.gumroad.com', 1000);
+            }
         }
     </script>
-    <!-- NEW CODE ADDITIONS END: CONSOLE JAVASCRIPT -->
 </body>
 
 </html>
