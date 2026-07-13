@@ -18,7 +18,6 @@
             background-color: var(--void-black);
             color: var(--text-silver);
             font-family: 'Courier New', Courier, monospace;
-            /* Monospace Registry */
             margin: 0;
             padding: 0;
             overflow-x: hidden;
@@ -47,6 +46,7 @@
             padding: 40px 20px;
             border-bottom: 2px solid var(--neon-violet);
             margin-bottom: 40px;
+            box-sizing: border-box;
         }
 
         h1 {
@@ -71,6 +71,7 @@
             max-width: 800px;
             padding: 0 20px;
             flex-grow: 1;
+            box-sizing: border-box;
         }
 
         .directory-box {
@@ -112,16 +113,48 @@
             box-shadow: -4px 4px 0px var(--neon-violet);
         }
 
+        /* SUB-NODE NETWORKS */
+        .subnode-container {
+            border: 1px dashed var(--neon-violet);
+            background: #000;
+            padding: 15px;
+            margin-bottom: 30px;
+        }
+
+        .subnode-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .subnode-button {
+            display: block;
+            text-align: center;
+            border: 1px solid #333;
+            color: var(--neon-violet);
+            padding: 8px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .subnode-button:hover {
+            border-color: var(--cyber-red);
+            color: white;
+            background: rgba(255, 0, 60, 0.1);
+        }
+
         /* TERMINAL_INPUT_INTERFACE */
         #terminal {
             width: 100%;
-            max-width: 800px;
             background: black;
             border: 1px solid #222;
             padding: 15px;
             color: #00FFcc;
             font-size: 12px;
             margin-bottom: 50px;
+            box-sizing: border-box;
         }
 
         #log {
@@ -159,11 +192,65 @@
     </header>
 
     <main>
-        <!-- ARSENAL_NODE -->
+        <!-- ARSENAL_NODE: VOIDMAIDEN -->
         <div class="directory-box">
             <span class="label">// PROJECT: VOIDMAIDEN</span>
             <p>High-performance Danmaku engine. Local-first architecture. Optimized for 240FPS neural bus speeds.</p>
             <a href="https://project-voidshrine-98.vercel.app/" class="button-link">INITIALIZE_ENGINE</a>
+        </div>
+
+        <!-- ARSENAL_NODE: LEADVISION PRO -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: LEADVISION PRO</span>
+            <p>Market intelligence dashboard. Client-side CSV parsing. Tracks distressed asset valuation distributions.
+            </p>
+            <a href="/Market_Intelligence.html" class="button-link">ACCESS_MARKET_INTEL</a>
+        </div>
+
+        <!-- ARSENAL_NODE: FJH REACTOR -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: FJH SYNTHESIS REACTOR</span>
+            <p>Flash-Joule Heating reactor simulation. Transmutes carbon feedstocks into valuable turbostratic graphene.
+            </p>
+            <a href="/GrapheneSynthesis.html" class="button-link">RUN_REACTOR</a>
+        </div>
+
+        <!-- ARSENAL_NODE: NAR MODELER -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: NAR ECOSYSTEM MODELER</span>
+            <p>Ecosystem yield engine. Calculates anaerobic biogas synthesis and solid soil amendments.</p>
+            <a href="/NAR-yield-calculator.html" class="button-link">RUN_MODELER</a>
+        </div>
+
+        <!-- ARSENAL_NODE: TRIG SOLVER -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: TRIGONOMETRY MASTER</span>
+            <p>Trigonometric identity resolution. Features procedural unit circle rendering and SSS/SAS solvers.</p>
+            <a href="/Trig-Calculator.html" class="button-link">LAUNCH_SOLVER</a>
+        </div>
+
+        <!-- ARSENAL_NODE: SOVEREIGN COMPILER -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: SOVEREIGN CLI COMPILER</span>
+            <p>Automated command compiler for yt-dlp media extraction and ffmpeg video transcoding.</p>
+            <a href="/web-X.html" class="button-link">RUN_COMPILER</a>
+        </div>
+
+        <!-- SUB-NODE MATRIX (x1.html - x10.html) -->
+        <div class="subnode-container">
+            <span class="label">// MATRIX: SUPPLEMENTARY DATA CHANNELS</span>
+            <div class="subnode-grid">
+                <a href="/x1.html" class="subnode-button">NODE_X1</a>
+                <a href="/x2.html" class="subnode-button">NODE_X2</a>
+                <a href="/x3.html" class="subnode-button">NODE_X3</a>
+                <a href="/x4.html" class="subnode-button">NODE_X4</a>
+                <a href="/x5.html" class="subnode-button">NODE_X5</a>
+                <a href="/x6.html" class="subnode-button">NODE_X6</a>
+                <a href="/x7.html" class="subnode-button">NODE_X7</a>
+                <a href="/x8.html" class="subnode-button">NODE_X8</a>
+                <a href="/x9.html" class="subnode-button">NODE_X9</a>
+                <a href="/x10.html" class="subnode-button">NODE_X10</a>
+            </div>
         </div>
 
         <!-- MANUAL_VAULT -->
@@ -193,10 +280,15 @@
         const log = document.getElementById('log');
         const input = document.getElementById('cmd-input');
         const validCommands = {
-            'help': 'Available logic-gates: [status, domus, clear, whoami]',
+            'help': 'Available logic-gates: [status, domus, clear, whoami, graphene, market, nar, trig, web-x, x1-x10]',
             'status': 'CHASSIS: 125lb // AETHER: 88% // FOCUS: OPTIMAL',
             'domus': 'REDIRECTING TO NEW WORLD REGISTRY...',
             'whoami': 'IDENTITY: ARCHITECT // VOID_WEAVER',
+            'graphene': 'INITIALIZING FLASH-JOULE HEATING REACTOR...',
+            'market': 'UPLINKING TO LEADVISION PRO RADAR...',
+            'nar': 'BOOTING ECOSYSTEM MODELER...',
+            'trig': 'OPENING MASTER GEOMETRY SOLVER...',
+            'web-x': 'COMPILING CLI INSTRUCTIONS...',
             'clear': ''
         };
 
@@ -212,11 +304,17 @@
         });
 
         function executeCommand(cmd) {
-            const response = validCommands[cmd] || `ERROR: '${cmd}' IS NOT A VALID SOVEREIGN COMMAND.`;
+            let response = validCommands[cmd] || `ERROR: '${cmd}' IS NOT A VALID SOVEREIGN COMMAND.`;
 
             if (cmd === 'clear') {
                 log.innerHTML = '';
                 return;
+            }
+
+            // Handle supplementary sub-nodes manually
+            const subnodeMatch = cmd.match(/^x([1-9]|10)$/);
+            if (subnodeMatch) {
+                response = `UPLINKING TO SUPPLEMENTARY SUB-NODE ${cmd.toUpperCase()}...`;
             }
 
             const entry = document.createElement('div');
@@ -224,8 +322,27 @@
             log.appendChild(entry);
             log.scrollTop = log.scrollHeight;
 
+            // Navigation Handshakes
             if (cmd === 'domus') {
                 setTimeout(() => window.location.href = 'https://berinelson.gumroad.com', 1000);
+            }
+            if (cmd === 'graphene') {
+                setTimeout(() => window.location.href = '/GrapheneSynthesis.html', 1000);
+            }
+            if (cmd === 'market') {
+                setTimeout(() => window.location.href = '/Market_Intelligence.html', 1000);
+            }
+            if (cmd === 'nar') {
+                setTimeout(() => window.location.href = '/NAR-yield-calculator.html', 1000);
+            }
+            if (cmd === 'trig') {
+                setTimeout(() => window.location.href = '/Trig-Calculator.html', 1000);
+            }
+            if (cmd === 'web-x') {
+                setTimeout(() => window.location.href = '/web-X.html', 1000);
+            }
+            if (subnodeMatch) {
+                setTimeout(() => window.location.href = `/${cmd}.html`, 1000);
             }
         }
     </script>
