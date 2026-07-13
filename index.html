@@ -338,6 +338,44 @@
             }
         }
     </script>
+    <script>
+        /* --- VOID_WEAVER // ANTI-RECONNAISSANCE FIREWALL --- */
+
+        // Block Right-Click (Context Menu)
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Block Keyboard Shortcuts (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+        document.addEventListener('keydown', (e) => {
+            // F12
+            if (e.key === 'F12') {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+I (Inspect)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+J (Console)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+C (Inspect Element)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
+                e.preventDefault();
+            }
+            // Ctrl+U (View Source)
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
+
+        // Advanced: Anti-Debugger Loop
+        // If they bypass the keyboard blocks and open DevTools, this freezes their console
+        setInterval(function () {
+            (function () {
+                return false;
+            }['constructor']('debugger')());
+        }, 100);
+    </script>
 </body>
 
 </html>
