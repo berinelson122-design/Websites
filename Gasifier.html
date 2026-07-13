@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PYROLYSIS REACTOR // MODELER</title>
+    <style>
+        :root {
+            --cyber-red: #FF003C;
+            --neon-violet: #E056FD;
+            --void-black: #000000;
+            --dark-gray: #0d0d0d;
+            --text-silver: #E5E5E5;
+        }
+
+        body {
+            background-color: var(--void-black);
+            color: var(--text-silver);
+            font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* BRUTALIST SCANLINES */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+            background: linear-gradient(rgba(18, 18, 18, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            opacity: 0.25;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px 20px;
+            border-bottom: 2px solid var(--neon-violet);
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2rem;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin: 0;
+            text-shadow: 0 0 10px var(--neon-violet);
+        }
+
+        .statusBar {
+            font-size: 10px;
+            color: var(--cyber-red);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* NEW CODE ADDITIONS START: DEVICE CONTROLS */
+        .deviceControls {
+            border: 1px solid var(--cyber-red);
+            padding: 5px;
+            background: #050505;
+            display: flex;
+            gap: 5px;
+        }
+
+        .deviceBtn {
+            background: transparent;
+            border: 1px solid #333;
+            color: var(--text-silver);
+            font-family: inherit;
+            font-size: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .deviceBtn.active {
+            background: var(--cyber-red);
+            color: black;
+            border-color: var(--cyber-red);
+        }
+
+        /* Dynamic scaling container */
+        #viewportShield {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: max-width 0.3s ease;
+        }
+
+        #viewportShield.mobile-view {
+            max-width: 480px;
+        }
+
+        /* NEW CODE ADDITIONS END: DEVICE CONTROLS */
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1.5fr;
+            }
+        }
+
+        .panel {
+            border: 1px solid #333;
+            background: var(--dark-gray);
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .panel:hover {
+            border-color: var(--neon-violet);
+            box-shadow: 0 0 15px rgba(224, 86, 253, 0.1);
+        }
+
+        .label {
+            color: var(--neon-violet);
+            font-weight: bold;
+            font-size: 11px;
+            margin-bottom: 10px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .inputGroup {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        select,
+        input {
+            background: black;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--cyber-red);
+            box-shadow: 0 0 10px rgba(255, 0, 60, 0.2);
+        }
+
+        .buttonLink {
+            display: block;
+            width: 100%;
+            background: var(--cyber-red);
+            color: black;
+            padding: 12px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 13px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .buttonLink:hover {
+            background: white;
+            box-shadow: -4px 4px 0px var(--neon-violet);
+        }
+
+        /* RESULTS DISPLAY styling */
+        .resultSection {
+            border-top: 1px solid #222;
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+
+        .resultTitle {
+            font-size: 12px;
+            color: var(--cyber-red);
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .valueGrid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .dataRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #111;
+            padding: 6px 0;
+            font-size: 11px;
+        }
+
+        .dataRow:hover {
+            background: rgba(224, 86, 253, 0.05);
+        }
+
+        .dataName {
+            color: #aaa;
+        }
+
+        .dataVal {
+            font-weight: bold;
+            color: white;
+        }
+
+        .dataValUnit {
+            color: var(--neon-violet);
+            font-size: 9px;
+            margin-left: 3px;
+        }
+
+        /* WATERMARK */
+        .watermark {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            opacity: 0.35;
+            font-size: 9px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: black;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-violet);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h1>PYROLYSIS MODELER</h1>
+            <div class="statusBar">UPLINK: ACTIVE // ENGINE: THERMO-CHEMICAL RECKONER</div>
+        </div>
+
+        <!-- NEW CODE ADDITIONS START: DEVICE CONTROLS -->
+        <div class="deviceControls">
+            <button class="deviceBtn active" id="btnPC" onclick="setDevice('pc')">PC View</button>
+            <button class="deviceBtn" id="btnMobile" onclick="setDevice('mobile')">Mobile View</button>
+        </div>
+        <!-- NEW CODE ADDITIONS END: DEVICE CONTROLS -->
+    </header>
+
+    <div id="viewportShield">
+        <main class="grid">
+            <!-- INPUT PANEL -->
+            <section class="panel">
+                <span class="label">// PARAMETERS INGRESS</span>
+
+                <div class="inputGroup">
+                    <label for="feedstockType">Feedstock Substance</label>
+                    <select id="feedstockType" onchange="runCalculation()">
+                        <option value="wood">Woodx</option>
+                        <option value="bones">Animal Bones</option>
+                        <option value="other">General Organic Waste</option>
+                    </select>
+                </div>
+
+                <div class="inputGroup">
+                    <label for="inputUnit">Input Measurement Standard</label>
+                    <select id="inputUnit" onchange="toggleUnitLabels()">
+                        <option value="metric">Metric (Kilograms)</option>
+                        <option value="imperial">Imperial (Pounds)</option>
+                    </select>
+                </div>
+
+                <div class="inputGroup">
+                    <label id="massLabel" for="inputMass">Feedstock Dry Mass Quantity</label>
+                    <input type="number" id="inputMass" value="100" min="0.1" step="any" oninput="runCalculation()">
+                </div>
+
+                <button class="buttonLink" onclick="runCalculation()">Compute Decomposition</button>
+            </section>
+
+            <!-- OUTPUT PANEL -->
+            <section class="panel">
+                <span class="label">// COMPILED PRODUCTS RECOVERY</span>
+
+                <div class="resultSection">
+                    <div class="resultTitle">// Primary Solid & Liquid Yields</div>
+                    <div class="valueGrid">
+                        <div class="dataRow">
+                            <span class="dataName">Charcoal</span>
+                            <span class="dataVal" id="outChar">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Pyroligneous Acid</span>
+                            <span class="dataVal" id="outAcid">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Tar</span>
+                            <span class="dataVal" id="outTar">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Water</span>
+                            <span class="dataVal" id="outWater">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resultSection">
+                    <div class="resultTitle">// Recovered Pyroligneous Solvents</div>
+                    <div class="valueGrid">
+                        <div class="dataRow">
+                            <span class="dataName">Methanol (Wood Alcohol)</span>
+                            <span class="dataVal" id="outMethanol">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Acetic Acid (Vinegar)</span>
+                            <span class="dataVal" id="outAcetic">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resultSection">
+                    <div class="resultTitle">// Tar Distillation Fractions</div>
+                    <div class="valueGrid">
+                        <div class="dataRow">
+                            <span class="dataName">Light Oils</span>
+                            <span class="dataVal" id="outLightOils">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Heavy Oils</span>
+                            <span class="dataVal" id="outHeavyOils">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Industrial Pitch</span>
+                            <span class="dataVal" id="outPitch">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Entrained Solvent Water</span>
+                            <span class="dataVal" id="outTarWater">0.00 <span class="dataValUnit">kg</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resultSection">
+                    <div class="resultTitle">// Synthesized Producer Gases</div>
+                    <div class="valueGrid">
+                        <div class="dataRow">
+                            <span class="dataName">Hydrogen (H2)</span>
+                            <span class="dataVal" id="gasH2">0.00 <span class="dataValUnit">m³</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Carbon Monoxide (CO)</span>
+                            <span class="dataVal" id="gasCO">0.00 <span class="dataValUnit">m³</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Carbon Dioxide (CO2)</span>
+                            <span class="dataVal" id="gasCO2">0.00 <span class="dataValUnit">m³</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Methane (CH4)</span>
+                            <span class="dataVal" id="gasCH4">0.00 <span class="dataValUnit">m³</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Ammonia (NH3)</span>
+                            <span class="dataVal" id="gasNH3">0.00 <span class="dataValUnit">m³</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Nitrogen (N2)</span>
+                            <span class="dataVal" id="gasN2">0.00 <span class="dataValUnit">m³</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Hydrogen Sulfide (H2S)</span>
+                            <span class="dataVal" id="gasH2S">0.00 <span class="dataValUnit">m³</span></span>
+                        </div>
+                        <div class="dataRow">
+                            <span class="dataName">Oxygen (O2)</span>
+                            <span class="dataVal" id="gasO2">0.00 <span class="dataValUnit">m³</span></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- WATERMARK -->
+    <div class="watermark">ARCHITECT // VOID WEAVER</div>
+
+    <script>
+        // NEW CODE ADDITIONS START: CONSOLE JAVASCRIPT
+        function setDevice(device) {
+            const shield = document.getElementById('viewportShield');
+            const btnPC = document.getElementById('btnPC');
+            const btnMobile = document.getElementById('btnMobile');
+
+            if (device === 'mobile') {
+                shield.classList.add('mobile-view');
+                btnMobile.classList.add('active');
+                btnPC.classList.remove('active');
+            } else {
+                shield.classList.remove('mobile-view');
+                btnPC.classList.add('active');
+                btnMobile.classList.remove('active');
+            }
+        }
+        // NEW CODE ADDITIONS END: CONSOLE JAVASCRIPT
+
+        function toggleUnitLabels() {
+            const unit = document.getElementById('inputUnit').value;
+            const massLabel = document.getElementById('massLabel');
+            if (unit === 'imperial') {
+                massLabel.textContent = "Feedstock Dry Mass Quantity (Pounds - lbs)";
+            } else {
+                massLabel.textContent = "Feedstock Dry Mass Quantity (Kilograms - kg)";
+            }
+            runCalculation();
+        }
+
+        function formatValPair(metricVal, metricUnit, imperialVal, imperialUnit) {
+            return `${metricVal.toFixed(3)} ${metricUnit} // ${imperialVal.toFixed(3)} ${imperialUnit}`;
+        }
+
+        function runCalculation() {
+            const massInput = parseFloat(document.getElementById('inputMass').value) || 0;
+            const feedstock = document.getElementById('feedstockType').value;
+            const unitSystem = document.getElementById('inputUnit').value;
+
+            // Normalize internal base calculation mass to Kilograms
+            let baseMassKg = massInput;
+            if (unitSystem === 'imperial') {
+                baseMassKg = massInput / 2.20462;
+            }
+
+            // Standard conversion constants
+            const KG_TO_LB = 2.20462;
+            const M3_TO_CFT = 35.3147;
+
+            // Gas Densities at STP (kg/m³)
+            const gasDensities = {
+                h2: 0.089,
+                co2: 1.977,
+                co: 1.250,
+                ch4: 0.717,
+                n2: 1.251,
+                o2: 1.429,
+                h2s: 1.539,
+                nh3: 0.771
+            };
+
+            // Yield profiles based on dry feedstock weight
+            let charPct, acidPct, tarPct, reactionWaterPct, gasPct;
+            let gasMassSplits = {};
+            let acidSplits = {};
+            let tarSplits = {};
+
+            if (feedstock === 'wood') {
+                charPct = 0.35;
+                acidPct = 0.25;
+                tarPct = 0.15;
+                reactionWaterPct = 0.10;
+                gasPct = 0.15;
+
+                // Relative weight splits of the gas phase
+                gasMassSplits = {
+                    co2: 0.45, co: 0.33, ch4: 0.15, h2: 0.05, n2: 0.01, o2: 0.005, h2s: 0.002, nh3: 0.003
+                };
+                // Splits of the raw pyroligneous acid phase
+                acidSplits = {
+                    methanol: 0.25, acetic: 0.35, residualWater: 0.40
+                };
+                // Splits of the raw anhydrous tar
+                tarSplits = {
+                    lightOils: 0.25, heavyOils: 0.30, pitch: 0.40, entrainedWater: 0.05
+                };
+            } else if (feedstock === 'bones') {
+                // Highly distinct yield matrix mimicking bone-char carbonization (Dippel oil recovery)
+                charPct = 0.58;
+                acidPct = 0.15;
+                tarPct = 0.12;
+                reactionWaterPct = 0.05;
+                gasPct = 0.10;
+
+                gasMassSplits = {
+                    co2: 0.20, co: 0.25, ch4: 0.15, h2: 0.08, n2: 0.015, o2: 0.00, h2s: 0.005, nh3: 0.30
+                };
+                acidSplits = {
+                    methanol: 0.10, acetic: 0.10, residualWater: 0.80
+                };
+                tarSplits = {
+                    lightOils: 0.30, heavyOils: 0.35, pitch: 0.30, entrainedWater: 0.05
+                };
+            } else {
+                // Other general organic refuse
+                charPct = 0.30;
+                acidPct = 0.30;
+                tarPct = 0.20;
+                reactionWaterPct = 0.08;
+                gasPct = 0.12;
+
+                gasMassSplits = {
+                    co2: 0.40, co: 0.30, ch4: 0.18, h2: 0.08, n2: 0.02, o2: 0.01, h2s: 0.01, nh3: 0.01
+                };
+                acidSplits = {
+                    methanol: 0.15, acetic: 0.20, residualWater: 0.65
+                };
+                tarSplits = {
+                    lightOils: 0.20, heavyOils: 0.35, pitch: 0.40, entrainedWater: 0.05
+                };
+            }
+
+            // Solid and primary liquid mass values
+            const charKg = baseMassKg * charPct;
+            const acidKg = baseMassKg * acidPct;
+            const tarKg = baseMassKg * tarPct;
+            const waterKg = baseMassKg * reactionWaterPct;
+            const gasTotalMassKg = baseMassKg * gasPct;
+
+            // Direct Pyroligneous Acid distillates
+            const methanolKg = acidKg * acidSplits.methanol;
+            const aceticKg = acidKg * acidSplits.acetic;
+
+            // Tar fractional distillation cuts
+            const lightOilsKg = tarKg * tarSplits.lightOils;
+            const heavyOilsKg = tarKg * tarSplits.heavyOils;
+            const pitchKg = tarKg * tarSplits.pitch;
+            const tarWaterKg = tarKg * tarSplits.entrainedWater;
+
+            // Render solids and liquids
+            document.getElementById('outChar').innerHTML = formatValPair(charKg, 'kg', charKg * KG_TO_LB, 'lbs');
+            document.getElementById('outAcid').innerHTML = formatValPair(acidKg, 'kg', acidKg * KG_TO_LB, 'lbs');
+            document.getElementById('outTar').innerHTML = formatValPair(tarKg, 'kg', tarKg * KG_TO_LB, 'lbs');
+            document.getElementById('outWater').innerHTML = formatValPair(waterKg, 'kg', waterKg * KG_TO_LB, 'lbs');
+
+            // Render volatile fractions
+            document.getElementById('outMethanol').innerHTML = formatValPair(methanolKg, 'kg', methanolKg * KG_TO_LB, 'lbs');
+            document.getElementById('outAcetic').innerHTML = formatValPair(aceticKg, 'kg', aceticKg * KG_TO_LB, 'lbs');
+
+            // Render tar cuts
+            document.getElementById('outLightOils').innerHTML = formatValPair(lightOilsKg, 'kg', lightOilsKg * KG_TO_LB, 'lbs');
+            document.getElementById('outHeavyOils').innerHTML = formatValPair(heavyOilsKg, 'kg', heavyOilsKg * KG_TO_LB, 'lbs');
+            document.getElementById('outPitch').innerHTML = formatValPair(pitchKg, 'kg', pitchKg * KG_TO_LB, 'lbs');
+            document.getElementById('outTarWater').innerHTML = formatValPair(tarWaterKg, 'kg', tarWaterKg * KG_TO_LB, 'lbs');
+
+            // Calculate and render gas phase volume targets
+            for (let gName in gasMassSplits) {
+                const componentMassKg = gasTotalMassKg * gasMassSplits[gName];
+                const density = gasDensities[gName];
+                let volumeM3 = 0;
+                if (density > 0) {
+                    volumeM3 = componentMassKg / density;
+                }
+                const volumeCft = volumeM3 * M3_TO_CFT;
+                const elementId = 'gas' + gName.toUpperCase();
+                const displayNode = document.getElementById(elementId);
+                if (displayNode) {
+                    displayNode.innerHTML = formatValPair(volumeM3, 'm³', volumeCft, 'ft³');
+                }
+            }
+        }
+
+        // Initialize state
+        toggleUnitLabels();
+    </script>
+</body>
+
+</html>
