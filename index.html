@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VOID SYSTEMS // ARCHITECT NODE</title>
     <style>
-        /* --- VISUAL_CODE: CSS_REGISTRY --- */
+        /* --- VISUAL CODE: CSS REGISTRY --- */
         :root {
             --cyber-red: #FF003C;
             --neon-violet: #E056FD;
@@ -27,7 +27,7 @@
             min-height: 100vh;
         }
 
-        /* BRUTALIST_SCANLINES */
+        /* BRUTALIST SCANLINES */
         body::after {
             content: " ";
             display: block;
@@ -145,7 +145,7 @@
             background: rgba(255, 0, 60, 0.1);
         }
 
-        /* TERMINAL_INPUT_INTERFACE */
+        /* TERMINAL INPUT INTERFACE */
         #terminal {
             width: 100%;
             background: black;
@@ -207,6 +207,14 @@
             <a href="/Graphene-Synthess.html" class="button-link">RUN REACTOR</a>
         </div>
 
+        <!-- ARSENAL_NODE: GASIFIER MODELER -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: WOOD PYROLYSIS</span>
+            <p>Thermo-chemical cracking simulator. Computes accurate yields of solids, pyroligneous liquids, and
+                producer gases.</p>
+            <a href="/Gasifier.html" class="button-link">RUN GASIFER</a>
+        </div>
+
         <!-- ARSENAL_NODE: NAR MODELER -->
         <div class="directory-box">
             <span class="label">// PROJECT: NAR ECOSYSTEM MODELER</span>
@@ -264,19 +272,20 @@
     </main>
 
     <footer>
-        ARCHITECT // VOID_WEAVER // &copy; 2026 DOMUS_GENESIS
+        ARCHITECT // VOID WEAVER // &copy; 2026 DOMUS GENESIS
     </footer>
 
     <script>
-        /* --- LOGIC_FLOW: JAVASCRIPT_UPLINK --- */
+        /* --- LOGIC FLOW: JAVASCRIPT UPLINK --- */
         const log = document.getElementById('log');
         const input = document.getElementById('cmd-input');
         const validCommands = {
-            'help': 'Available logic-gates: [status, domus, clear, whoami, graphene, market, nar, trig, web-x, x1-x10]',
+            'help': 'Available logic-gates: [status, domus, clear, whoami, graphene, gasifier, market, nar, trig, web-x, x1-x10]',
             'status': 'CHASSIS: 125lb // AETHER: 88% // FOCUS: OPTIMAL',
             'domus': 'REDIRECTING TO NEW WORLD REGISTRY...',
-            'whoami': 'IDENTITY: ARCHITECT // VOID_WEAVER',
+            'whoami': 'IDENTITY: ARCHITECT // VOID WEAVER',
             'graphene': 'INITIALIZING FLASH-JOULE HEATING REACTOR...',
+            'gasifier': 'INITIALIZING PYROLYSIS DECOMPOSITION MODELER...',
             'market': 'UPLINKING TO LEADVISION PRO RADAR...',
             'nar': 'BOOTING ECOSYSTEM MODELER...',
             'trig': 'OPENING MASTER GEOMETRY SOLVER...',
@@ -321,8 +330,11 @@
             if (cmd === 'graphene') {
                 setTimeout(() => window.location.href = '/GrapheneSynthesis.html', 1000);
             }
+            if (cmd === 'gasifier') {
+                setTimeout(() => window.location.href = '/Gasifier.html', 1000);
+            }
             if (cmd === 'market') {
-                setTimeout(() => window.location.href = '/Market_Intelligence.html', 1000);
+                setTimeout(() => window.location.href = '/Market-Intelligence.html', 1000);
             }
             if (cmd === 'nar') {
                 setTimeout(() => window.location.href = '/NAR-yield-calculator.html', 1000);
@@ -339,7 +351,7 @@
         }
     </script>
     <script>
-        /* --- VOID_WEAVER // ANTI-RECONNAISSANCE FIREWALL --- */
+        /* --- VOID WEAVER // ANTI RECONNAISSANCE FIREWALL --- */
 
         // Block Right-Click (Context Menu)
         document.addEventListener('contextmenu', event => event.preventDefault());
