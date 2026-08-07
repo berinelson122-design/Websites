@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLANETARY GEOMETRY // CALCULATOR</title>
+    <style>
+        :root {
+            --cyber-red: #FF003C;
+            --neon-violet: #E056FD;
+            --void-black: #000000;
+            --dark-gray: #0d0d0d;
+            --text-silver: #E5E5E5;
+        }
+
+        body {
+            background-color: var(--void-black);
+            color: var(--text-silver);
+            font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* BRUTALIST SCANLINES */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+            background: linear-gradient(rgba(18, 18, 18, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            opacity: 0.25;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1000px;
+            padding: 30px 20px;
+            border-bottom: 2px solid var(--neon-violet);
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: white;
+            font-size: 1.8rem;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin: 0;
+            text-shadow: 0 0 10px var(--neon-violet);
+        }
+
+        .status-bar {
+            font-size: 10px;
+            color: var(--cyber-red);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* NEW CODE ADDITIONS START: DEVICE CONTROLS */
+        .device-controls {
+            border: 1px solid var(--cyber-red);
+            padding: 5px;
+            background: #050505;
+            display: flex;
+            gap: 5px;
+        }
+
+        .device-btn {
+            background: transparent;
+            border: 1px solid #333;
+            color: var(--text-silver);
+            font-family: inherit;
+            font-size: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .device-btn.active {
+            background: var(--cyber-red);
+            color: black;
+            border-color: var(--cyber-red);
+        }
+
+        /* Dynamic scaling container */
+        #viewport-shield {
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: max-width 0.3s ease;
+        }
+
+        #viewport-shield.mobile-view {
+            max-width: 450px;
+        }
+
+        /* NEW CODE ADDITIONS END: DEVICE CONTROLS */
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .panel {
+            border: 1px solid #333;
+            background: var(--dark-gray);
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .panel:hover {
+            border-color: var(--neon-violet);
+            box-shadow: 0 0 15px rgba(224, 86, 253, 0.1);
+        }
+
+        .label {
+            color: var(--neon-violet);
+            font-weight: bold;
+            font-size: 11px;
+            margin-bottom: 15px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        select,
+        input {
+            background: black;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--cyber-red);
+            box-shadow: 0 0 10px rgba(255, 0, 60, 0.2);
+        }
+
+        .action-btn {
+            display: block;
+            width: 100%;
+            background: var(--cyber-red);
+            color: black;
+            padding: 12px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 13px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .action-btn:hover {
+            background: white;
+            box-shadow: -4px 4px 0px var(--neon-violet);
+        }
+
+        .result-section {
+            border-top: 1px solid #222;
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+
+        .result-title {
+            font-size: 11px;
+            color: var(--cyber-red);
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #111;
+            padding: 8px 0;
+            font-size: 11px;
+        }
+
+        .data-row:hover {
+            background: rgba(224, 86, 253, 0.05);
+        }
+
+        .data-name {
+            color: #aaa;
+        }
+
+        .data-val {
+            font-weight: bold;
+            color: white;
+        }
+
+        .data-val-unit {
+            color: var(--neon-violet);
+            font-size: 9px;
+            margin-left: 3px;
+        }
+
+        .watermark {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            opacity: 0.35;
+            font-size: 9px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h1>PLANETARY CALCULATOR</h1>
+            <div class="status-bar">UPLINK: ACTIVE // SPHERICAL METRICS NODE</div>
+        </div>
+
+        <!-- NEW CODE ADDITIONS START: DEVICE CONTROLS -->
+        <div class="device-controls">
+            <button class="device-btn active" id="btnPC" onclick="setDevice('pc')">PC View</button>
+            <button class="device-btn" id="btnMobile" onclick="setDevice('mobile')">Mobile View</button>
+        </div>
+        <!-- NEW CODE ADDITIONS END: DEVICE CONTROLS -->
+    </header>
+
+    <div id="viewport-shield">
+        <main class="grid">
+            <!-- INPUT PANEL -->
+            <section class="panel">
+                <span class="label">// PARAMETERS INGRESS</span>
+
+                <div class="input-group">
+                    <label for="unitSystem">Measurement Unit Standard</label>
+                    <select id="unitSystem" onchange="toggleUnitLabels()">
+                        <option value="metric">Metric (Kilometers - km)</option>
+                        <option value="imperial">Imperial (Miles - mi)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label id="radiusLabel" for="inputRadius">Planetary Radius</label>
+                    <input type="number" id="inputRadius" value="63710" min="1" step="any"
+                        oninput="calculateGeometry()">
+                </div>
+
+                <div class="input-group">
+                    <label>Presets (Quick Ingress)</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                        <button class="device-btn" onclick="applyPreset(6371, 3958.8, 'Earth')">Earth (1x)</button>
+                        <button class="device-btn" onclick="applyPreset(63710, 39588, 'Xenia')">Xenia (10x)</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- OUTPUT PANEL -->
+            <section class="panel">
+                <span class="label">// GEOMETRIC METRICS OUTPUT</span>
+
+                <div class="result-section">
+                    <div class="result-title">// Absolute Physical Dimensions</div>
+                    <div class="data-row">
+                        <span class="data-name">Equatorial Radius</span>
+                        <span class="data-val" id="outRadius">0.00 <span class="data-val-unit">km</span></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-name">Circumference (2πr)</span>
+                        <span class="data-val" id="outCircumference">0.00 <span class="data-val-unit">km</span></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-name">Surface Area (4πr²)</span>
+                        <span class="data-val" id="outArea">0.00 <span class="data-val-unit">km²</span></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-name">Planetary Volume (4/3πr³)</span>
+                        <span class="data-val" id="outVolume">0.00 <span class="data-val-unit">km³</span></span>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-title">// Scale Relative To Earth</div>
+                    <div class="data-row">
+                        <span class="data-name">Radius Ratio</span>
+                        <span class="data-val" id="ratioRadius">0.00 <span class="data-val-unit">x Earth</span></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-name">Surface Area Ratio</span>
+                        <span class="data-val" id="ratioArea" style="color: var(--cyber-red);">0.00 <span
+                                class="data-val-unit">x Earth</span></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-name">Volume Ratio</span>
+                        <span class="data-val" id="ratioVolume">0.00 <span class="data-val-unit">x Earth</span></span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- WATERMARK -->
+    <div class="watermark">ARCHITECT // VOID WEAVER</div>
+
+    <script>
+        // NEW CODE ADDITIONS START: DEVICE CONTROLS
+        function setDevice(device) {
+            const shield = document.getElementById('viewport-shield');
+            const btnPC = document.getElementById('btnPC');
+            const btnMobile = document.getElementById('btnMobile');
+
+            if (device === 'mobile') {
+                shield.classList.add('mobile-view');
+                btnMobile.classList.add('active');
+                btnPC.classList.remove('active');
+            } else {
+                shield.classList.remove('mobile-view');
+                btnPC.classList.add('active');
+                btnMobile.classList.remove('active');
+            }
+        }
+        // NEW CODE ADDITIONS END: DEVICE CONTROLS
+
+        function toggleUnitLabels() {
+            const unit = document.getElementById('unitSystem').value;
+            const radiusLabel = document.getElementById('radiusLabel');
+            if (unit === 'imperial') {
+                radiusLabel.textContent = "Planetary Radius (Miles - mi)";
+            } else {
+                radiusLabel.textContent = "Planetary Radius (Kilometers - km)";
+            }
+            calculateGeometry();
+        }
+
+        function applyPreset(metricVal, imperialVal, name) {
+            const unit = document.getElementById('unitSystem').value;
+            const input = document.getElementById('inputRadius');
+            if (unit === 'imperial') {
+                input.value = imperialVal;
+            } else {
+                input.value = metricVal;
+            }
+            calculateGeometry();
+        }
+
+        function formatScientific(num) {
+            if (num >= 1e9 || num <= 1e-4) {
+                return num.toExponential(4);
+            }
+            return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(num);
+        }
+
+        function calculateGeometry() {
+            const radius = parseFloat(document.getElementById('inputRadius').value) || 0;
+            const unit = document.getElementById('unitSystem').value;
+            const unitLength = unit === 'metric' ? 'km' : 'mi';
+
+            const pi = Math.PI;
+            const circumference = 2 * pi * radius;
+            const surfaceArea = 4 * pi * Math.pow(radius, 2);
+            const volume = (4 / 3) * pi * Math.pow(radius, 3);
+
+            // Earth reference baselines
+            const earthRadius = unit === 'metric' ? 6371 : 3958.8;
+
+            const radiusRatio = radius / earthRadius;
+            const surfaceAreaRatio = Math.pow(radiusRatio, 2);
+            const volumeRatio = Math.pow(radiusRatio, 3);
+
+            // Render Output
+            document.getElementById('outRadius').innerHTML = `${formatScientific(radius)} <span class="data-val-unit">${unitLength}</span>`;
+            document.getElementById('outCircumference').innerHTML = `${formatScientific(circumference)} <span class="data-val-unit">${unitLength}</span>`;
+            document.getElementById('outArea').innerHTML = `${formatScientific(surfaceArea)} <span class="data-val-unit">${unitLength}²</span>`;
+            document.getElementById('outVolume').innerHTML = `${formatScientific(volume)} <span class="data-val-unit">${unitLength}³</span>`;
+
+            document.getElementById('ratioRadius').innerHTML = `${formatScientific(radiusRatio)} <span class="data-val-unit">x Earth</span>`;
+            document.getElementById('ratioArea').innerHTML = `${formatScientific(surfaceAreaRatio)} <span class="data-val-unit">x Earth</span>`;
+            document.getElementById('ratioVolume').innerHTML = `${formatScientific(volumeRatio)} <span class="data-val-unit">x Earth</span>`;
+        }
+
+        // Initialize state
+        toggleUnitLabels();
+    </script>
+</body>
+
+</html>
