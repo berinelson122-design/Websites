@@ -192,22 +192,30 @@
     </header>
 
     <main>
-        <!-- ARSENAL_NODE: VOIDMAIDEN -->
+        <!-- ARSENAL NODE: VOIDMAIDEN -->
         <div class="directory-box">
             <span class="label">// PROJECT: VOIDMAIDEN</span>
             <p>High-performance Danmaku engine. Local-first architecture. Optimized for 240FPS neural bus speeds.</p>
             <a href="https://project-voidshrine-98.vercel.app/" class="button-link">INITIALIZE ENGINE</a>
         </div>
 
-        <!-- ARSENAL_NODE: FJH REACTOR -->
+        <!-- ARSENAL NODE: PLANETARY CALCULATOR -->
+        <div class="directory-box">
+            <span class="label">// PROJECT: PLANETARY CALCULATOR</span>
+            <p>Spherical geometry engine. Calculates surface area, circumference, and volume relative to Earth
+                baselines.</p>
+            <a href="/Planetary_Calculator.html" class="button-link">RUN CALCULATOR</a>
+        </div>
+
+        <!-- ARSENAL NODE: FJH REACTOR -->
         <div class="directory-box">
             <span class="label">// PROJECT: FJH SYNTHESIS REACTOR</span>
             <p>Flash-Joule Heating reactor simulation. Transmutes carbon feedstocks into valuable turbostratic graphene.
             </p>
-            <a href="/Graphene-Synthesis.html" class="button-link">RUN REACTOR</a>
+            <a href="/GrapheneSynthesis.html" class="button-link">RUN REACTOR</a>
         </div>
 
-        <!-- ARSENAL_NODE: GASIFIER MODELER -->
+        <!-- ARSENAL NODE: GASIFIER MODELER -->
         <div class="directory-box">
             <span class="label">// PROJECT: GASIFIER MODELER</span>
             <p>Thermo-chemical cracking simulator. Computes accurate yields of solids, pyroligneous liquids, and
@@ -215,63 +223,63 @@
             <a href="/Gasifier.html" class="button-link">RUN REACTOR</a>
         </div>
 
-        <!-- ARSENAL_NODE: NAR MODELER -->
+        <!-- ARSENAL NODE: NAR MODELER -->
         <div class="directory-box">
             <span class="label">// PROJECT: NAR ECOSYSTEM MODELER</span>
             <p>Ecosystem yield engine. Calculates anaerobic biogas synthesis and solid soil amendments.</p>
             <a href="/NAR-yield-calculator.html" class="button-link">RUN MODELER</a>
         </div>
 
-        <!-- ARSENAL_NODE: TRIG SOLVER -->
+        <!-- ARSENAL NODE: TRIG SOLVER -->
         <div class="directory-box">
             <span class="label">// PROJECT: TRIGONOMETRY MASTER</span>
             <p>Trigonometric identity resolution. Features procedural unit circle rendering and SSS/SAS solvers.</p>
             <a href="/Trig-Calculator.html" class="button-link">LAUNCH SOLVER</a>
         </div>
 
-        <!-- ARSENAL_NODE: SOVEREIGN COMPILER -->
+        <!-- ARSENAL NODE: SOVEREIGN COMPILER -->
         <div class="directory-box">
             <span class="label">// PROJECT: SOVEREIGN CLI COMPILER</span>
             <p>Automated command compiler for yt-dlp media extraction and ffmpeg video transcoding.</p>
-            <a href="/yt-dlp.html" class="button-link">RUN COMPILER</a>
+            <a href="/web-X.html" class="button-link">RUN COMPILER</a>
         </div>
 
-        <!-- ARSENAL_NODE: SUBSYSTEM RUNNER -->
+        <!-- ARSENAL NODE: SUBSYSTEM RUNNER -->
         <div class="directory-box">
             <span class="label">// PROJECT: SUBSYSTEM RUNNER</span>
             <p>Custom platformer engine. Wall sliding, dashing, and real-time obstacle avoidance.</p>
             <a href="https://subsystem-runner.vercel.app/" class="button-link">RUN SUBSYSTEM</a>
         </div>
 
-        <!-- ARSENAL_NODE: FIREWALL BASTION -->
+        <!-- ARSENAL NODE: FIREWALL BASTION -->
         <div class="directory-box">
             <span class="label">// PROJECT: FIREWALL BASTION</span>
             <p>Tactical tower defense protocol protecting core databases from incoming compromised data packets.</p>
             <a href="https://firewall-bastion.vercel.app/" class="button-link">RUN BASTION</a>
         </div>
 
-        <!-- ARSENAL_NODE: ENTROPY PURGE -->
+        <!-- ARSENAL NODE: ENTROPY PURGE -->
         <div class="directory-box">
             <span class="label">// PROJECT: ENTROPY PURGE</span>
             <p>High-performance, procedurally generated action loop featuring dynamic upgrade patches.</p>
             <a href="https://entropy-purge.vercel.app/" class="button-link">RUN PURGE</a>
         </div>
 
-        <!-- ARSENAL_NODE: VOID SCRAPER -->
+        <!-- ARSENAL NODE: VOID SCRAPER -->
         <div class="directory-box">
             <span class="label">// PROJECT: VOID SCRAPER</span>
             <p>Phaser-engineered survival simulator utilizing procedural speed scaling and local sound synthesis.</p>
             <a href="https://void-scraper.vercel.app/" class="button-link">RUN SCRAPER</a>
         </div>
 
-        <!-- ARSENAL_NODE: DATA DEFRAG -->
+        <!-- ARSENAL NODE: DATA DEFRAG -->
         <div class="directory-box">
             <span class="label">// PROJECT: DATA DEFRAG</span>
             <p>Real-time physics engine implementing collision-response pipelines and mass consolidation mechanics.</p>
             <a href="https://data-defrag.vercel.app/" class="button-link">RUN DEFRAG</a>
         </div>
 
-        <!-- ARSENAL_NODE: TELLURIC SYNC -->
+        <!-- ARSENAL NODE: TELLURIC SYNC -->
         <div class="directory-box">
             <span class="label">// PROJECT: TELLURIC SYNC</span>
             <p>Rhythm-bullet hybrid visualizer synchronized with localized audio-synthesized drum patterns.</p>
@@ -295,7 +303,7 @@
             </div>
         </div>
 
-        <!-- MANUAL_VAULT -->
+        <!-- MANUAL VAULT -->
         <div class="directory-box">
             <span class="label">// ARCHIVE: GUMROAD TREASURY</span>
             <p>Access the bit-perfect manuals for Graphene Synthesis, H3O2 Structuring, and the Iron Ration protocol.
@@ -303,7 +311,7 @@
             <a href="https://berinelson.gumroad.com/" class="button-link">EXTRACT DATA</a>
         </div>
 
-        <!-- INTERACTIVE_TERMINAL -->
+        <!-- INTERACTIVE TERMINAL -->
         <div id="terminal">
             <div id="log">> SYSTEM BOOT COMPLETE. AWAITING INPUT...</div>
             <div style="display: flex;">
@@ -322,10 +330,11 @@
         const log = document.getElementById('log');
         const input = document.getElementById('cmd-input');
         const validCommands = {
-            'help': 'Available logic-gates: [status, domus, clear, whoami, graphene, gasifier, market, nar, trig, web-x, subsystem, bastion, purge, scraper, defrag, sync, x1-x10]',
+            'help': 'Available logic-gates: [status, domus, clear, whoami, graphene, gasifier, market, nar, trig, web-x, subsystem, bastion, purge, scraper, defrag, sync, planet, x1-x10]',
             'status': 'CHASSIS: 125lb // AETHER: 88% // FOCUS: OPTIMAL',
             'domus': 'REDIRECTING TO NEW WORLD REGISTRY...',
             'whoami': 'IDENTITY: ARCHITECT // VOID WEAVER',
+            'planet': 'INITIALIZING PLANETARY GEOMETRY ENGINE...',
             'graphene': 'INITIALIZING FLASH-JOULE HEATING REACTOR...',
             'gasifier': 'INITIALIZING PYROLYSIS DECOMPOSITION MODELER...',
             'market': 'UPLINKING TO LEADVISION PRO RADAR...',
@@ -374,6 +383,9 @@
             // Navigation Handshakes
             if (cmd === 'domus') {
                 setTimeout(() => window.location.href = 'https://berinelson.gumroad.com', 1000);
+            }
+            if (cmd === 'planet') {
+                setTimeout(() => window.location.href = '/Planetary-Calculator.html', 1000);
             }
             if (cmd === 'graphene') {
                 setTimeout(() => window.location.href = '/GrapheneSynthesis.html', 1000);
