@@ -192,6 +192,7 @@
     </header>
 
     <main>
+
         <!-- ARSENAL NODE: VOIDMAIDEN -->
         <div class="directory-box">
             <span class="label">// PROJECT: VOIDMAIDEN</span>
@@ -199,20 +200,21 @@
             <a href="https://project-voidshrine-98.vercel.app/" class="button-link">INITIALIZE ENGINE</a>
         </div>
 
-        <!-- ARSENAL NODE: PLANETARY CALCULATOR -->
+        <!-- ARSENAL NODE: VOID RUNNER -->
         <div class="directory-box">
-            <span class="label">// PROJECT: PLANETARY CALCULATOR</span>
-            <p>Spherical geometry engine. Calculates surface area, circumference, and volume relative to Earth
-                baselines.</p>
-            <a href="/Planetary_Calculator.html" class="button-link">RUN CALCULATOR</a>
+            <span class="label">// PROJECT: VOID RUNNER</span>
+            <p>Three-dimensional endless runner engine. Procedural ninja model navigating an endless cyber dimension.
+            </p>
+            <a href="https://void-runner-ten.vercel.app/" class="button-link">RUN VOID RUNNER</a>
         </div>
+
 
         <!-- ARSENAL NODE: FJH REACTOR -->
         <div class="directory-box">
             <span class="label">// PROJECT: FJH SYNTHESIS REACTOR</span>
             <p>Flash-Joule Heating reactor simulation. Transmutes carbon feedstocks into valuable turbostratic graphene.
             </p>
-            <a href="/Graphene-Synthesis.html" class="button-link">RUN REACTOR</a>
+            <a href="/GrapheneSynthesis.html" class="button-link">RUN REACTOR</a>
         </div>
 
         <!-- ARSENAL NODE: GASIFIER MODELER -->
@@ -241,7 +243,7 @@
         <div class="directory-box">
             <span class="label">// PROJECT: SOVEREIGN CLI COMPILER</span>
             <p>Automated command compiler for yt-dlp media extraction and ffmpeg video transcoding.</p>
-            <a href="/yt-dlp.html" class="button-link">RUN COMPILER</a>
+            <a href="/web-X.html" class="button-link">RUN COMPILER</a>
         </div>
 
         <!-- ARSENAL NODE: SUBSYSTEM RUNNER -->
@@ -330,11 +332,10 @@
         const log = document.getElementById('log');
         const input = document.getElementById('cmd-input');
         const validCommands = {
-            'help': 'Available logic-gates: [status, domus, clear, whoami, graphene, gasifier, market, nar, trig, web-x, subsystem, bastion, purge, scraper, defrag, sync, planet, x1-x10]',
+            'help': 'Available logic-gates: [status, domus, clear, whoami, graphene, gasifier, market, nar, trig, web-x, subsystem, bastion, purge, scraper, defrag, sync, runner, x1-x10]',
             'status': 'CHASSIS: 125lb // AETHER: 88% // FOCUS: OPTIMAL',
             'domus': 'REDIRECTING TO NEW WORLD REGISTRY...',
             'whoami': 'IDENTITY: ARCHITECT // VOID WEAVER',
-            'planet': 'INITIALIZING PLANETARY GEOMETRY ENGINE...',
             'graphene': 'INITIALIZING FLASH-JOULE HEATING REACTOR...',
             'gasifier': 'INITIALIZING PYROLYSIS DECOMPOSITION MODELER...',
             'market': 'UPLINKING TO LEADVISION PRO RADAR...',
@@ -346,7 +347,8 @@
             'purge': 'BOOTING ENTROPY PURGE SEQUENCE...',
             'scraper': 'INITIALIZING VOID SCRAPER SIMULATOR...',
             'defrag': 'RUNNING PHYSICAL DATA DEFRAG...',
-            'sync': 'COMMENCING TELLURIC RYHTHM SYNC...',
+            'sync': 'COMMENCING TELLURIC RHYTHM SYNC...',
+            'runner': 'INITIALIZING THREE-DIMENSIONAL NINJA RUNNER...',
             'clear': ''
         };
 
@@ -384,9 +386,6 @@
             if (cmd === 'domus') {
                 setTimeout(() => window.location.href = 'https://berinelson.gumroad.com', 1000);
             }
-            if (cmd === 'planet') {
-                setTimeout(() => window.location.href = '/Planetary-Calculator.html', 1000);
-            }
             if (cmd === 'graphene') {
                 setTimeout(() => window.location.href = '/GrapheneSynthesis.html', 1000);
             }
@@ -422,6 +421,9 @@
             }
             if (cmd === 'sync') {
                 setTimeout(() => window.location.href = 'https://telluric-sync.vercel.app/', 1000);
+            }
+            if (cmd === 'runner') {
+                setTimeout(() => window.location.href = 'https://void-runner-ten.vercel.app/', 1000);
             }
             if (subnodeMatch) {
                 setTimeout(() => window.location.href = `/${cmd}.html`, 1000);
