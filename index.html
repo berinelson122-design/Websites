@@ -192,7 +192,7 @@
     </header>
 
     <main>
-
+        
         <!-- ARSENAL NODE: VOIDMAIDEN -->
         <div class="directory-box">
             <span class="label">// PROJECT: VOIDMAIDEN</span>
@@ -203,25 +203,39 @@
         <!-- ARSENAL NODE: VOID RUNNER -->
         <div class="directory-box">
             <span class="label">// PROJECT: VOID RUNNER</span>
-            <p>Three-dimensional endless runner engine. Procedural ninja model navigating an endless cyber dimension.
-            </p>
+            <p>Three-dimensional endless runner engine. Procedural ninja model navigating an endless cyber dimension.</p>
             <a href="https://void-runner-ten.vercel.app/" class="button-link">RUN VOID RUNNER</a>
         </div>
 
+        <div class="directory-box">
+            <span class="label">// PROJECT: HOMESTEAD 3D SIMULATOR</span>
+            <p>Real-time agricultural simulation engine with automated telemetry, nutrient cycles, and disaster stress-testing.</p>
+            <a href="https://homestead-simulator-62zq.vercel.app/" class="button-link">RUN SIMULATOR</a>
+        </div>
+
+        <div class="directory-box">
+            <span class="label">// PROJECT: VOID RPG BUILDER</span>
+            <p>Visual RPG level editor, event orchestrator, and audio matrix system for custom narrative design.</p>
+            <a href="https://void-builder-iota.vercel.app/" class="button-link">LAUNCH BUILDER</a>
+        </div>
+
+        <div class="directory-box">
+            <span class="label">// PROJECT: PDF-TO-DOC CONVERTER</span>
+            <p>AI-powered layout reconstruction. Converts complex PDF tables and typography into editable Google Docs.</p>
+            <a href="https://pdf-to-google-doc-converter.vercel.app/" class="button-link">LAUNCH CONVERTER</a>
+        </div>
 
         <!-- ARSENAL NODE: FJH REACTOR -->
         <div class="directory-box">
             <span class="label">// PROJECT: FJH SYNTHESIS REACTOR</span>
-            <p>Flash-Joule Heating reactor simulation. Transmutes carbon feedstocks into valuable turbostratic graphene.
-            </p>
+            <p>Flash-Joule Heating reactor simulation. Transmutes carbon feedstocks into valuable turbostratic graphene.</p>
             <a href="/Graphene-Synthesis.html" class="button-link">RUN REACTOR</a>
         </div>
 
         <!-- ARSENAL NODE: GASIFIER MODELER -->
         <div class="directory-box">
             <span class="label">// PROJECT: GASIFIER MODELER</span>
-            <p>Thermo-chemical cracking simulator. Computes accurate yields of solids, pyroligneous liquids, and
-                producer gases.</p>
+            <p>Thermo-chemical cracking simulator. Computes accurate yields of solids, pyroligneous liquids, and producer gases.</p>
             <a href="/Gasifier.html" class="button-link">RUN REACTOR</a>
         </div>
 
@@ -387,7 +401,7 @@
                 setTimeout(() => window.location.href = 'https://berinelson.gumroad.com', 1000);
             }
             if (cmd === 'graphene') {
-                setTimeout(() => window.location.href = '/GrapheneSynthesis.html', 1000);
+                setTimeout(() => window.location.href = '/Graphene-Synthesis.html', 1000);
             }
             if (cmd === 'gasifier') {
                 setTimeout(() => window.location.href = '/Gasifier.html', 1000);
@@ -432,40 +446,16 @@
     </script>
     <script>
         /* --- VOID WEAVER // ANTI RECONNAISSANCE FIREWALL --- */
-
-        // Block Right-Click (Context Menu)
         document.addEventListener('contextmenu', event => event.preventDefault());
-
-        // Block Keyboard Shortcuts (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
         document.addEventListener('keydown', (e) => {
-            // F12
-            if (e.key === 'F12') {
-                e.preventDefault();
-            }
-            // Ctrl+Shift+I (Inspect)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
-                e.preventDefault();
-            }
-            // Ctrl+Shift+J (Console)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
-                e.preventDefault();
-            }
-            // Ctrl+Shift+C (Inspect Element)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
-                e.preventDefault();
-            }
-            // Ctrl+U (View Source)
-            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
-                e.preventDefault();
-            }
+            if (e.key === 'F12') e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) e.preventDefault();
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) e.preventDefault();
         });
-
-        // Advanced: Anti-Debugger Loop
-        // If they bypass the keyboard blocks and open DevTools, this freezes their console
         setInterval(function () {
-            (function () {
-                return false;
-            }['constructor']('debugger')());
+            (function () { return false; }['constructor']('debugger')());
         }, 100);
     </script>
 </body>
