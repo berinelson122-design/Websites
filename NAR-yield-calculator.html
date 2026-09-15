@@ -161,7 +161,7 @@
                 </div>
 
                 <!-- Liquid Amendments -->
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     <div class="flex flex-col gap-1">
                         <label class="text-white/50 uppercase text-[10px]">Urine (1:10) <span
                                 class="unit-vol">(L)</span></label>
@@ -184,6 +184,36 @@
                         <label class="text-white/50 uppercase text-[10px]">Calcium Acetate <span
                                 class="unit-vol">(L)</span></label>
                         <input type="number" id="in-calcium" value="2" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Worm Tea <span
+                                class="unit-vol">(L)</span></label>
+                        <input type="number" id="in-wormtea" value="10" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">LAB Serum <span
+                                class="unit-vol">(L)</span></label>
+                        <input type="number" id="in-lab" value="2" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Biogas Digestate <span
+                                class="unit-vol">(L)</span></label>
+                        <input type="number" id="in-biogasdig" value="20" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">Calcium Phosphate <span
+                                class="unit-vol">(L)</span></label>
+                        <input type="number" id="in-caphos" value="1" min="0" oninput="calculateYield()"
+                            class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-white/50 uppercase text-[10px]">JADAM Liquid Fert <span
+                                class="unit-vol">(L)</span></label>
+                        <input type="number" id="in-jadam" value="5" min="0" oninput="calculateYield()"
                             class="bg-black border border-red-violet/40 p-2 text-white w-full rounded">
                     </div>
                 </div>
@@ -241,15 +271,16 @@
 
                 <!-- Digester Outputs -->
                 <div class="grid grid-cols-2 gap-4 mt-auto">
-                    <div class="border border-red-violet/40 p-3 bg-black rounded flex flex-col">
-                        <span class="text-[10px] text-white/50 block mb-1">METHANE (CH4) OUTPUT</span>
-                        <span class="text-xl font-bold text-white" id="out-methane">0.00</span>
+                    <div class="border border-red-violet/40 p-3 bg-black rounded flex flex-col relative">
+                        <span class="text-[10px] text-white/50 block mb-1">PURE METHANE (CH4) OUTPUT</span>
+                        <span class="text-[8px] text-white/40 mb-2 leading-tight">*Filtered via charcoal, sawdust, condensation, & rust</span>
+                        <span class="text-xl font-bold text-white mt-auto" id="out-methane">0.00</span>
                         <span class="text-[10px] text-white/40 unit-gas">Cubic Meters (m³)</span>
                     </div>
                     <div class="border border-red-violet/40 p-3 bg-black rounded flex flex-col">
-                        <span class="text-[10px] text-white/50 block mb-1">CARBON DIOXIDE (CO2)</span>
-                        <span class="text-xl font-bold text-white/60" id="out-co2">0.00</span>
-                        <span class="text-[10px] text-white/40 unit-gas">Cubic Meters (m³)</span>
+                        <span class="text-[10px] text-white/50 block mb-1">CALCIUM CARBONATE BYPRODUCT</span>
+                        <span class="text-xl font-bold text-white/60 mt-auto" id="out-caco3">0.00</span>
+                        <span class="text-[10px] text-white/40 unit-mass-g">Grams (g)</span>
                     </div>
                     <div
                         class="col-span-2 border border-red-violet/40 p-3 bg-red-violet/10 rounded flex flex-col items-center">
@@ -343,6 +374,7 @@
             document.getElementById('out-yield-unit').textContent = system === 'metric' ? 'Kilograms (kg)' : 'Pounds (lbs)';
 
             document.querySelectorAll('.unit-mass').forEach(el => el.textContent = system === 'metric' ? '(kg)' : '(lbs)');
+            document.querySelectorAll('.unit-mass-g').forEach(el => el.textContent = system === 'metric' ? 'Grams (g)' : 'Ounces (oz)');
             document.querySelectorAll('.unit-vol').forEach(el => el.textContent = system === 'metric' ? '(L)' : '(Gal)');
             document.querySelectorAll('.unit-gas').forEach(el => el.textContent = system === 'metric' ? 'Cubic Meters (m³)' : 'Cubic Feet (ft³)');
 
@@ -365,6 +397,11 @@
             const fish = document.getElementById('in-fish');
             const plantfluid = document.getElementById('in-plantfluid');
             const calcium = document.getElementById('in-calcium');
+            const wormTea = document.getElementById('in-wormtea');
+            const labSerum = document.getElementById('in-lab');
+            const biogasDig = document.getElementById('in-biogasdig');
+            const caPhos = document.getElementById('in-caphos');
+            const jadam = document.getElementById('in-jadam');
 
             // Sliders for Digester
             const slideFood = document.getElementById('slide-food');
@@ -382,6 +419,11 @@
                 fish.value = (fish.value * L_TO_GAL).toFixed(1);
                 plantfluid.value = (plantfluid.value * L_TO_GAL).toFixed(1);
                 calcium.value = (calcium.value * L_TO_GAL).toFixed(1);
+                wormTea.value = (wormTea.value * L_TO_GAL).toFixed(1);
+                labSerum.value = (labSerum.value * L_TO_GAL).toFixed(1);
+                biogasDig.value = (biogasDig.value * L_TO_GAL).toFixed(1);
+                caPhos.value = (caPhos.value * L_TO_GAL).toFixed(1);
+                jadam.value = (jadam.value * L_TO_GAL).toFixed(1);
 
                 updateSliderBounds(slideFood, 0, 1100, (slideFood.value * KG_TO_LBS));
                 updateSliderBounds(slideManure, 0, 2200, (slideManure.value * KG_TO_LBS));
@@ -398,6 +440,11 @@
                 fish.value = (fish.value / L_TO_GAL).toFixed(1);
                 plantfluid.value = (plantfluid.value / L_TO_GAL).toFixed(1);
                 calcium.value = (calcium.value / L_TO_GAL).toFixed(1);
+                wormTea.value = (wormTea.value / L_TO_GAL).toFixed(1);
+                labSerum.value = (labSerum.value / L_TO_GAL).toFixed(1);
+                biogasDig.value = (biogasDig.value / L_TO_GAL).toFixed(1);
+                caPhos.value = (caPhos.value / L_TO_GAL).toFixed(1);
+                jadam.value = (jadam.value / L_TO_GAL).toFixed(1);
 
                 updateSliderBounds(slideFood, 0, 500, (slideFood.value / KG_TO_LBS));
                 updateSliderBounds(slideManure, 0, 1000, (slideManure.value / KG_TO_LBS));
@@ -426,6 +473,11 @@
             let fish = parseFloat(document.getElementById('in-fish').value) || 0;
             let plantfluid = parseFloat(document.getElementById('in-plantfluid').value) || 0;
             let calcium = parseFloat(document.getElementById('in-calcium').value) || 0;
+            let wormTea = parseFloat(document.getElementById('in-wormtea').value) || 0;
+            let labSerum = parseFloat(document.getElementById('in-lab').value) || 0;
+            let biogasDig = parseFloat(document.getElementById('in-biogasdig').value) || 0;
+            let caPhos = parseFloat(document.getElementById('in-caphos').value) || 0;
+            let jadam = parseFloat(document.getElementById('in-jadam').value) || 0;
 
             const targetCrop = document.getElementById('crop-type').value;
             const specs = cropSpecifications[targetCrop];
@@ -443,6 +495,11 @@
                 fish /= L_TO_GAL;
                 plantfluid /= L_TO_GAL;
                 calcium /= L_TO_GAL;
+                wormTea /= L_TO_GAL;
+                labSerum /= L_TO_GAL;
+                biogasDig /= L_TO_GAL;
+                caPhos /= L_TO_GAL;
+                jadam /= L_TO_GAL;
             }
 
             // 3. Mathematical Model (Diminishing returns logic based on density per square meter)
@@ -452,7 +509,7 @@
             const dBiochar = area > 0 ? biochar / area : 0;
             const dManure = area > 0 ? manure / area : 0;
             const dRockdust = area > 0 ? rockdust / area : 0;
-            const dLiquidTotal = area > 0 ? (urine + fish + plantfluid + calcium) / area : 0;
+            const dLiquidTotal = area > 0 ? (urine + fish + plantfluid + calcium + wormTea + labSerum + biogasDig + caPhos + jadam) / area : 0;
 
             // Multipliers (Caps ensure extreme inputs don't create infinite yield)
             const mBiochar = Math.min(dBiochar * 0.4, 0.35); // Max 35% boost
@@ -503,19 +560,22 @@
             let methaneM3 = biogasM3 * 0.60;
             let co2M3 = biogasM3 * 0.40;
 
+            // 1 m3 CO2 = ~1830g CO2. 1g CO2 creates ~2.27g CaCO3. 1 m3 CO2 = ~4150g CaCO3
+            let caco3Grams = co2M3 * 4150;
+
             // Digestate recovery is roughly 90% of input mass converted to Liters
             let digestateLiters = totalInputMassKg * 0.90;
 
             // Convert to Imperial if active
             if (currentSystem === 'imperial') {
                 methaneM3 *= M3_TO_FT3;
-                co2M3 *= M3_TO_FT3;
+                caco3Grams *= 0.035274; // Grams to Ounces
                 digestateLiters *= L_TO_GAL;
             }
 
             // Display
             document.getElementById('out-methane').textContent = formatNumber(methaneM3);
-            document.getElementById('out-co2').textContent = formatNumber(co2M3);
+            document.getElementById('out-caco3').textContent = formatNumber(caco3Grams);
             document.getElementById('out-digestate').textContent = formatNumber(digestateLiters);
         }
 
